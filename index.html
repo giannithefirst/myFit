@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover" />
 <title>myFit</title>
 <style>
   :root{
@@ -14,32 +14,55 @@
     --danger:#ff453a;
     --line:#2c2c2f;
     --water:#3aa0ff;
+    --chip:#121214;
   }
+
+  /* iPhone-friendly width */
   body{
-    margin:0; padding:16px;
-    background:var(--bg); color:var(--text);
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom) 0;
   }
+  .wrap{
+    max-width: 430px; /* iPhone 14 Pro-ish */
+    margin: 0 auto;
+    padding: 14px 14px 20px 14px;
+  }
+
   .topbar{
     display:flex; align-items:center; justify-content:space-between;
-    gap:12px; margin-bottom:10px;
+    gap:10px; margin-bottom:10px;
   }
-  .brand{ font-size:22px; font-weight:800; letter-spacing:.2px; }
-  .pill{
-    display:inline-flex; gap:8px; align-items:center;
-    background:var(--card); border:1px solid var(--line);
-    padding:8px 10px; border-radius:999px; color:var(--muted);
-    font-size:13px;
+  .brand{
+    display:flex; align-items:center; gap:8px;
+    font-size:22px; font-weight:900; letter-spacing:.2px;
   }
+  .brand span{ opacity:.95; }
   .seg{
     display:inline-flex; border:1px solid var(--line);
     border-radius:999px; overflow:hidden; background:var(--card);
+    flex:0 0 auto;
   }
   .seg button{
     border:none; padding:8px 10px; color:var(--muted);
     background:transparent; font-size:13px;
   }
-  .seg button.active{ color:#0b0b0c; background:var(--accent); font-weight:700; }
+  .seg button.active{ color:#0b0b0c; background:var(--accent); font-weight:800; }
+
+  .tabs{
+    display:grid; grid-template-columns:repeat(4,1fr);
+    gap:8px; margin-top:10px;
+  }
+  .tabbtn{
+    border:1px solid var(--line);
+    background:var(--chip); color:var(--muted);
+    border-radius:12px; padding:10px 8px;
+    font-size:13px; font-weight:800;
+  }
+  .tabbtn.active{ background:var(--accent); color:#0b0b0c; border-color:transparent; }
+
   .grid{ display:grid; gap:12px; }
   .card{
     background:var(--card);
@@ -49,16 +72,19 @@
   }
   h2{ margin:0 0 8px 0; font-size:16px; }
   .sub{ color:var(--muted); font-size:13px; margin-top:4px; }
+  .divider{ height:1px; background:var(--line); margin:12px 0; }
+
   input, select, textarea{
     width:100%; box-sizing:border-box;
-    background:#121214; color:var(--text);
+    background:var(--chip); color:var(--text);
     border:1px solid var(--line);
     border-radius:12px;
     padding:12px 12px;
     font-size:15px;
     outline:none;
   }
-  textarea{ min-height:90px; resize:vertical; }
+  textarea{ min-height:92px; resize:vertical; }
+
   .row{ display:flex; gap:10px; align-items:center; }
   .row > *{ flex:1; }
   .btn{
@@ -68,45 +94,53 @@
     font-size:15px;
     background:var(--accent);
     color:#0b0b0c;
-    font-weight:800;
+    font-weight:900;
   }
-  .btn.secondary{
-    background:#2b2b2f; color:var(--text); font-weight:700;
-  }
-  .btn.danger{
-    background:var(--danger); color:#0b0b0c; font-weight:900;
-  }
+  .btn.secondary{ background:#2b2b2f; color:var(--text); font-weight:800; }
+  .btn.danger{ background:var(--danger); color:#0b0b0c; font-weight:900; }
   .btn.small{ padding:10px 12px; font-size:14px; border-radius:10px; }
-  .divider{ height:1px; background:var(--line); margin:12px 0; }
+
   .kpi{
     display:grid; grid-template-columns:1fr 1fr; gap:10px;
   }
   .kpi .box{
-    background:#121214; border:1px solid var(--line);
+    background:var(--chip); border:1px solid var(--line);
     border-radius:12px; padding:10px;
   }
   .kpi .label{ color:var(--muted); font-size:12px; }
-  .kpi .value{ font-size:16px; font-weight:800; margin-top:2px; }
+  .kpi .value{ font-size:16px; font-weight:900; margin-top:2px; }
+
   .progress{
     width:100%; height:10px; border-radius:999px;
-    background:#121214; border:1px solid var(--line); overflow:hidden;
+    background:var(--chip); border:1px solid var(--line); overflow:hidden;
   }
   .progress > div{ height:100%; background:var(--accent); width:0%; }
-  .tabs{
-    display:grid; grid-template-columns:repeat(4,1fr);
-    gap:8px; margin-top:12px;
+
+  /* Day navigator */
+  .daynav{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:10px;
   }
-  .tabbtn{
+  .navbtn{
     border:1px solid var(--line);
-    background:#121214; color:var(--muted);
-    border-radius:12px; padding:10px;
-    font-size:13px; font-weight:700;
+    background:var(--chip);
+    color:var(--text);
+    border-radius:12px;
+    width:44px; height:40px;
+    font-size:18px; font-weight:900;
   }
-  .tabbtn.active{ background:var(--accent); color:#0b0b0c; border-color:transparent; }
-  .hidden{ display:none !important; }
+  .datechip{
+    flex:1;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    background:var(--chip); border:1px solid var(--line);
+    border-radius:12px; height:40px;
+    font-weight:900;
+  }
+  .datechip small{ color:var(--muted); font-weight:800; }
 
   /* Water glasses */
   .glasses{ display:flex; gap:10px; flex-wrap:wrap; }
+  .glasswrap{ display:flex; flex-direction:column; align-items:center; }
   .glass{
     width:72px; height:92px;
     border:2px solid #3a3a40;
@@ -118,22 +152,22 @@
     position:absolute; left:0; right:0; bottom:0;
     height:0%;
     background:linear-gradient(180deg, rgba(58,160,255,0.9), rgba(58,160,255,0.5));
-    transition:height .2s ease;
+    transition:height .18s ease;
   }
   .glass .check{
     position:absolute; inset:0;
     display:flex; align-items:center; justify-content:center;
-    font-size:28px; font-weight:900;
+    font-size:28px; font-weight:1000;
     color:rgba(0,0,0,0);
-    transition:color .2s ease;
+    transition:color .18s ease;
   }
   .glass.done .fill{ height:68%; }
   .glass.done .check{ color:rgba(0,0,0,0.45); }
   .glasslabel{
     text-align:center; margin-top:6px;
     font-size:12px; color:var(--muted);
+    font-weight:800;
   }
-  .glasswrap{ display:flex; flex-direction:column; align-items:center; }
 
   /* Workout list */
   .witem{
@@ -143,14 +177,14 @@
   .witem:last-child{ border-bottom:none; }
   .wcheck{
     width:22px; height:22px; border-radius:6px;
-    border:1px solid var(--line); background:#121214;
+    border:1px solid var(--line); background:var(--chip);
     display:flex; align-items:center; justify-content:center;
-    color:#0b0b0c; font-weight:900; flex:0 0 auto;
+    color:#0b0b0c; font-weight:1000; flex:0 0 auto;
     margin-top:2px;
   }
   .wcheck.done{ background:var(--accent); border-color:transparent; }
-  .wname{ font-weight:800; }
-  .wmeta{ color:var(--muted); font-size:13px; margin-top:2px; }
+  .wname{ font-weight:1000; }
+  .wmeta{ color:var(--muted); font-size:13px; margin-top:2px; font-weight:800; }
 
   /* Week calendar */
   .week{
@@ -158,1088 +192,1073 @@
     gap:8px;
   }
   .day{
-    background:#121214; border:1px solid var(--line);
+    background:var(--chip); border:1px solid var(--line);
     border-radius:12px; padding:10px; min-height:74px;
     display:flex; flex-direction:column; gap:6px;
   }
-  .day .dow{ color:var(--muted); font-size:12px; }
-  .day .what{ font-size:12px; font-weight:800; line-height:1.2; }
-  .day.today{ border-color:var(--accent); box-shadow:0 0 0 2px rgba(0,200,150,0.15) inset; }
+  .day .dow{ color:var(--muted); font-size:12px; font-weight:800; }
+  .day .what{ font-size:12px; font-weight:1000; line-height:1.2; }
+  .day.sel{ border-color:var(--accent); box-shadow:0 0 0 2px rgba(0,200,150,0.15) inset; }
+
+  .hidden{ display:none !important; }
 </style>
 </head>
-<body>
 
-<div class="topbar">
-  <div class="brand">myFit</div>
-  <div class="row" style="justify-content:flex-end; gap:10px; flex:0 0 auto;">
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="brand">🏋️ <span>myFit</span></div>
     <div class="seg" aria-label="Units toggle">
       <button id="uImp" class="active" onclick="setUnits('imperial')">Imperial</button>
       <button id="uMet" onclick="setUnits('metric')">Metric</button>
     </div>
   </div>
-</div>
 
-<div class="tabs">
-  <button class="tabbtn active" id="tabToday" onclick="showTab('today')">Today</button>
-  <button class="tabbtn" id="tabPlan" onclick="showTab('plan')">Plan</button>
-  <button class="tabbtn" id="tabChat" onclick="showTab('chat')">Coach</button>
-  <button class="tabbtn" id="tabSettings" onclick="showTab('settings')">Settings</button>
-</div>
+  <div class="tabs">
+    <button class="tabbtn active" id="tabToday" onclick="showTab('today')">Today</button>
+    <button class="tabbtn" id="tabPlan" onclick="showTab('plan')">Plan</button>
+    <button class="tabbtn" id="tabGoal" onclick="showTab('goal')">Goal</button>
+    <button class="tabbtn" id="tabSettings" onclick="showTab('settings')">Settings</button>
+  </div>
 
-<!-- ONBOARDING / QUESTIONNAIRE -->
-<div id="onboarding" class="card" style="margin-top:12px;">
-  <h2>Initial Questionnaire</h2>
-  <div class="sub">Answer once. You can edit later in Settings.</div>
-  <div class="divider"></div>
+  <!-- ONBOARDING / QUESTIONNAIRE -->
+  <div id="onboarding" class="card" style="margin-top:12px;">
+    <h2>Initial Questionnaire ✍️</h2>
+    <div class="sub">Answer once. You can edit goal later.</div>
+    <div class="divider"></div>
 
-  <div id="step1">
-    <div class="row">
-      <select id="goalType">
+    <div id="step1">
+      <div class="row">
+        <select id="goalType">
+          <option value="fat">Lose Fat</option>
+          <option value="muscle">Build Muscle</option>
+          <option value="hybrid">Hybrid / Recomp</option>
+          <option value="endurance">Endurance Focus</option>
+        </select>
+        <select id="exp">
+          <option value="beginner">Beginner</option>
+          <option value="intermediate">Intermediate</option>
+          <option value="advanced">Advanced</option>
+        </select>
+      </div>
+      <div class="row" style="margin-top:10px;">
+        <input id="age" type="number" placeholder="Age (optional)">
+        <input id="height" type="number" placeholder="Height (inches or cm)">
+      </div>
+      <div class="row" style="margin-top:10px;">
+        <input id="weight" type="number" placeholder="Weight (lbs or kg)">
+        <select id="daysPerWeek">
+          <option value="3">3 days / week</option>
+          <option value="4" selected>4 days / week</option>
+          <option value="5">5 days / week</option>
+          <option value="6">6 days / week</option>
+        </select>
+      </div>
+      <button class="btn" onclick="nextStep(2)">Next ➜</button>
+    </div>
+
+    <div id="step2" class="hidden">
+      <div class="row">
+        <select id="equipment">
+          <option value="gym" selected>Gym</option>
+          <option value="home_db">Home (dumbbells)</option>
+          <option value="bw">Bodyweight only</option>
+        </select>
+        <select id="timePerSession">
+          <option value="20">~20 min</option>
+          <option value="35" selected>~35 min</option>
+          <option value="50">~50 min</option>
+          <option value="65">~65 min</option>
+        </select>
+      </div>
+      <div class="row" style="margin-top:10px;">
+        <select id="mobility">
+          <option value="low">Mobility: low</option>
+          <option value="mid" selected>Mobility: moderate</option>
+          <option value="high">Mobility: high priority</option>
+        </select>
+        <select id="cardioPref">
+          <option value="none">Cardio: minimal</option>
+          <option value="some" selected>Cardio: some</option>
+          <option value="love">Cardio: I like it</option>
+        </select>
+      </div>
+      <div class="row" style="margin-top:10px;">
+        <select id="alcohol">
+          <option value="0">Alcohol: none</option>
+          <option value="1" selected>Alcohol: 1–2 days/week</option>
+          <option value="3">Alcohol: 3–4 days/week</option>
+          <option value="5">Alcohol: 5+ days/week</option>
+        </select>
+        <select id="lifestyle">
+          <option value="sedentary">Lifestyle: sedentary</option>
+          <option value="light" selected>Lifestyle: lightly active</option>
+          <option value="active">Lifestyle: active</option>
+        </select>
+      </div>
+      <button class="btn" onclick="nextStep(3)">Next ➜</button>
+      <button class="btn secondary" onclick="nextStep(1)">⬅ Back</button>
+    </div>
+
+    <div id="step3" class="hidden">
+      <input id="limitations" placeholder="Injuries/limits (e.g., knee, back) — optional" />
+      <div class="row" style="margin-top:10px;">
+        <input id="goalWeight" type="number" placeholder="Goal weight (optional)">
+        <input id="timelineWeeks" type="number" placeholder="Timeline weeks (optional)">
+      </div>
+      <button class="btn" onclick="finishOnboarding()">Generate myFit Plan 🚀</button>
+      <button class="btn secondary" onclick="nextStep(2)">⬅ Back</button>
+    </div>
+
+    <div class="divider"></div>
+    <div class="sub">
+      ⚠️ Private browsing resets storage. If you insist on private mode, use Export/Import in Settings.
+    </div>
+  </div>
+
+  <!-- TODAY -->
+  <div id="view-today" class="grid hidden" style="margin-top:12px;">
+
+    <div class="card">
+      <div class="daynav">
+        <button class="navbtn" onclick="shiftSelected(-1)">⬅️</button>
+        <div class="datechip" id="selDateChip">—</div>
+        <button class="navbtn" onclick="shiftSelected(1)">➡️</button>
+      </div>
+      <div class="sub" id="selDayHint" style="margin-top:10px;">—</div>
+      <div class="divider"></div>
+      <div class="row">
+        <button class="btn secondary" onclick="analyzeDay()">Analyze 🧠</button>
+        <button class="btn" onclick="jumpToToday()">Today 📍</button>
+      </div>
+      <div class="sub" id="analysisOut" style="margin-top:10px;">—</div>
+    </div>
+
+    <div class="card">
+      <h2>Water Intake 💧</h2>
+      <div class="sub" id="waterTargetText">—</div>
+      <div class="divider"></div>
+      <div class="glasses" id="glasses"></div>
+      <div class="divider"></div>
+      <button class="btn secondary" onclick="resetWaterSelected()">Reset this day</button>
+    </div>
+
+    <div class="card">
+      <h2>Daily Workout 🏋️</h2>
+      <div class="sub" id="dayTitle">—</div>
+      <div class="divider"></div>
+      <div id="workoutList"></div>
+      <div class="divider"></div>
+      <div class="row">
+        <button class="btn secondary" onclick="makeSelectedRest()">Make Rest</button>
+        <button class="btn" onclick="completeSelectedWorkout()">Complete Day ✅</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Make an Audible 🎧</h2>
+      <div class="sub">Update the plan for the day you’re viewing. Example: “I did legs: squat 3x8, RDL 3x10, leg press 3x12”.</div>
+      <div class="divider"></div>
+      <textarea id="audibleIn" placeholder="What did you do / what do you want changed?"></textarea>
+      <div class="row" style="margin-top:10px;">
+        <button class="btn secondary" onclick="applyAudible(false)">Update this day</button>
+        <button class="btn" onclick="applyAudible(true)">Update + adjust week</button>
+      </div>
+      <div class="sub" id="audibleOut" style="margin-top:10px;">—</div>
+    </div>
+
+  </div>
+
+  <!-- PLAN -->
+  <div id="view-plan" class="grid hidden" style="margin-top:12px;">
+    <div class="card">
+      <h2>Weekly Plan 📅</h2>
+      <div class="sub">Highlights the day you’re viewing.</div>
+      <div class="divider"></div>
+      <div class="week" id="weekGrid"></div>
+    </div>
+
+    <div class="card">
+      <h2>Weekly Summary 📈</h2>
+      <div class="sub" id="weeklySummary">MVP: summary uses adherence + completion. (We can expand.)</div>
+    </div>
+  </div>
+
+  <!-- GOAL -->
+  <div id="view-goal" class="grid hidden" style="margin-top:12px;">
+    <div class="card">
+      <h2>Goal Tracker 🎯</h2>
+      <div class="kpi">
+        <div class="box">
+          <div class="label">Goal</div>
+          <div class="value" id="kGoal">—</div>
+        </div>
+        <div class="box">
+          <div class="label">Weekly adherence</div>
+          <div class="value" id="kAdh">0%</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="label" style="color:var(--muted);font-size:12px;font-weight:800;">Progress</div>
+      <div class="progress" style="margin-top:6px;"><div id="goalBar"></div></div>
+      <div class="sub" id="goalText" style="margin-top:8px;">—</div>
+      <div class="divider"></div>
+      <button class="btn secondary" onclick="openGoalChange()">Change goal ✍️</button>
+    </div>
+
+    <div id="goalChange" class="card hidden">
+      <h2>Change Goal ✍️</h2>
+      <div class="sub">This rebuilds the week (keeps your logs).</div>
+      <div class="divider"></div>
+      <select id="newGoalType">
         <option value="fat">Lose Fat</option>
         <option value="muscle">Build Muscle</option>
         <option value="hybrid">Hybrid / Recomp</option>
         <option value="endurance">Endurance Focus</option>
       </select>
-      <select id="exp">
-        <option value="beginner">Beginner</option>
-        <option value="intermediate">Intermediate</option>
-        <option value="advanced">Advanced</option>
-      </select>
-    </div>
-    <div class="row" style="margin-top:10px;">
-      <input id="age" type="number" placeholder="Age (optional)">
-      <input id="height" type="number" placeholder="Height (inches or cm)">
-    </div>
-    <div class="row" style="margin-top:10px;">
-      <input id="weight" type="number" placeholder="Weight (lbs or kg)">
-      <select id="daysPerWeek">
-        <option value="3">3 days / week</option>
-        <option value="4" selected>4 days / week</option>
-        <option value="5">5 days / week</option>
-        <option value="6">6 days / week</option>
-      </select>
-    </div>
-    <button class="btn" onclick="nextStep(2)">Next</button>
-  </div>
-
-  <div id="step2" class="hidden">
-    <div class="row">
-      <select id="equipment">
-        <option value="gym" selected>Gym</option>
-        <option value="home_db">Home (dumbbells)</option>
-        <option value="bw">Bodyweight only</option>
-      </select>
-      <select id="timePerSession">
-        <option value="20">~20 min</option>
-        <option value="35" selected>~35 min</option>
-        <option value="50">~50 min</option>
-        <option value="65">~65 min</option>
-      </select>
-    </div>
-    <div class="row" style="margin-top:10px;">
-      <select id="mobility">
-        <option value="low">Mobility: low</option>
-        <option value="mid" selected>Mobility: moderate</option>
-        <option value="high">Mobility: high priority</option>
-      </select>
-      <select id="cardioPref">
-        <option value="none">Cardio: minimal</option>
-        <option value="some" selected>Cardio: some</option>
-        <option value="love">Cardio: I like it</option>
-      </select>
-    </div>
-    <div class="row" style="margin-top:10px;">
-      <select id="alcohol">
-        <option value="0">Alcohol: none</option>
-        <option value="1" selected>Alcohol: 1–2 days/week</option>
-        <option value="3">Alcohol: 3–4 days/week</option>
-        <option value="5">Alcohol: 5+ days/week</option>
-      </select>
-      <select id="lifestyle">
-        <option value="sedentary">Lifestyle: sedentary</option>
-        <option value="light" selected>Lifestyle: lightly active</option>
-        <option value="active">Lifestyle: active</option>
-      </select>
-    </div>
-    <button class="btn" onclick="nextStep(3)">Next</button>
-    <button class="btn secondary" onclick="nextStep(1)">Back</button>
-  </div>
-
-  <div id="step3" class="hidden">
-    <input id="limitations" placeholder="Injuries/limits (e.g., knee, back) — optional" />
-    <div class="row" style="margin-top:10px;">
-      <input id="goalWeight" type="number" placeholder="Goal weight (optional)">
-      <input id="timelineWeeks" type="number" placeholder="Timeline weeks (optional)">
-    </div>
-    <button class="btn" onclick="finishOnboarding()">Generate myFit Plan</button>
-    <button class="btn secondary" onclick="nextStep(2)">Back</button>
-  </div>
-
-  <div class="divider"></div>
-  <div class="sub">
-    Private browsing will reset app storage. Use normal Safari or use Export/Import in Settings.
-  </div>
-</div>
-
-<!-- TODAY -->
-<div id="view-today" class="grid hidden" style="margin-top:12px;">
-  <div class="card">
-    <h2>Goal Tracker</h2>
-    <div class="kpi">
-      <div class="box">
-        <div class="label">Goal</div>
-        <div class="value" id="kGoal">—</div>
+      <div class="row" style="margin-top:10px;">
+        <select id="newDays">
+          <option value="3">3 days / week</option>
+          <option value="4" selected>4 days / week</option>
+          <option value="5">5 days / week</option>
+          <option value="6">6 days / week</option>
+        </select>
+        <select id="newTime">
+          <option value="20">~20 min</option>
+          <option value="35" selected>~35 min</option>
+          <option value="50">~50 min</option>
+          <option value="65">~65 min</option>
+        </select>
       </div>
-      <div class="box">
-        <div class="label">Weekly adherence</div>
-        <div class="value" id="kAdh">0%</div>
+      <div class="divider"></div>
+      <button class="btn" onclick="applyGoalChange()">Apply ✅</button>
+      <button class="btn secondary" onclick="closeGoalChange()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div id="view-settings" class="grid hidden" style="margin-top:12px;">
+    <div class="card">
+      <h2>Body Metrics ⚖️</h2>
+      <div class="sub">Optional daily weight entry.</div>
+      <div class="divider"></div>
+      <div class="row">
+        <input id="setWeight" type="number" placeholder="Current weight (lbs or kg)">
+        <button class="btn small" style="flex:0 0 auto" onclick="saveWeight()">Save</button>
       </div>
+      <div class="sub" id="weightSavedText" style="margin-top:10px;">—</div>
     </div>
-    <div class="divider"></div>
-    <div class="row">
-      <div style="flex:1">
-        <div class="label" style="color:var(--muted);font-size:12px;">Progress</div>
-        <div class="progress" style="margin-top:6px;"><div id="goalBar"></div></div>
-        <div class="sub" id="goalText" style="margin-top:8px;">—</div>
-      </div>
-      <button class="btn small secondary" style="flex:0 0 auto" onclick="openGoalChange()">Change goal</button>
-    </div>
-  </div>
 
-  <div class="card">
-    <h2>Water Intake</h2>
-    <div class="sub" id="waterTargetText">—</div>
-    <div class="divider"></div>
-    <div class="glasses" id="glasses"></div>
-    <div class="divider"></div>
-    <button class="btn secondary" onclick="resetWaterToday()">Reset today</button>
-  </div>
-
-  <div class="card">
-    <h2>Today’s Workout</h2>
-    <div class="sub" id="todayTitle">—</div>
-    <div class="divider"></div>
-    <div id="workoutList"></div>
-    <div class="divider"></div>
-    <div class="row">
-      <button class="btn secondary" onclick="markTodayRest()">Make today Rest</button>
-      <button class="btn" onclick="completeTodayWorkout()">Complete Day</button>
+    <div class="card">
+      <h2>Export / Import 🧳</h2>
+      <div class="sub">Use if you browse private (storage resets).</div>
+      <div class="divider"></div>
+      <button class="btn secondary" onclick="exportState()">Export myFit data</button>
+      <textarea id="exportBox" class="hidden" readonly></textarea>
+      <div class="divider"></div>
+      <textarea id="importBox" placeholder="Paste exported JSON here to restore…"></textarea>
+      <button class="btn" onclick="importState()">Import</button>
+      <div class="divider"></div>
+      <button class="btn danger" onclick="wipeAll()">Wipe all data</button>
     </div>
   </div>
 
-  <div class="card">
-    <h2>Daily Summary</h2>
-    <div class="sub" id="dailySummary">Complete water + workout to generate summary.</div>
-  </div>
-</div>
-
-<!-- PLAN -->
-<div id="view-plan" class="grid hidden" style="margin-top:12px;">
-  <div class="card">
-    <h2>Weekly Plan</h2>
-    <div class="sub">Tap “Coach” to swap or reshuffle.</div>
-    <div class="divider"></div>
-    <div class="week" id="weekGrid"></div>
-  </div>
-
-  <div class="card">
-    <h2>Weekly Summary</h2>
-    <div class="sub" id="weeklySummary">Generated at end of week (MVP stub).</div>
-  </div>
-</div>
-
-<!-- COACH -->
-<div id="view-chat" class="grid hidden" style="margin-top:12px;">
-  <div class="card">
-    <h2>Coach</h2>
-    <div class="sub">Examples: “swap split squats for leg press”, “rest today”, “only 20 minutes”, “knee pain”</div>
-    <div class="divider"></div>
-    <textarea id="chatIn" placeholder="Type what happened / what you want changed…"></textarea>
-    <button class="btn" onclick="runCoach()">Update plan</button>
-    <div class="divider"></div>
-    <div class="sub" id="chatOut">—</div>
-  </div>
-
-  <div class="card">
-    <h2>Manual Import (MVP)</h2>
-    <div class="sub">Paste notes from Strava/Health (or type what you did). We’ll reflect it in today + week.</div>
-    <div class="divider"></div>
-    <textarea id="importIn" placeholder="Example: 3.2 mile run, 35 min, moderate. Also did 3 sets bench 135x8."></textarea>
-    <button class="btn secondary" onclick="logManual()">Log it</button>
-    <div class="sub" id="importOut" style="margin-top:10px;">—</div>
-  </div>
-</div>
-
-<!-- SETTINGS -->
-<div id="view-settings" class="grid hidden" style="margin-top:12px;">
-  <div class="card">
-    <h2>Body Metrics</h2>
-    <div class="sub">Optional daily weight entry.</div>
-    <div class="divider"></div>
-    <div class="row">
-      <input id="setWeight" type="number" placeholder="Current weight (lbs or kg)">
-      <button class="btn small" style="flex:0 0 auto" onclick="saveWeight()">Save</button>
-    </div>
-    <div class="sub" id="weightSavedText" style="margin-top:10px;">—</div>
-  </div>
-
-  <div class="card">
-    <h2>Export / Import</h2>
-    <div class="sub">Use this if you insist on private browsing (since storage resets).</div>
-    <div class="divider"></div>
-    <button class="btn secondary" onclick="exportState()">Export myFit data</button>
-    <textarea id="exportBox" class="hidden" readonly></textarea>
-    <div class="divider"></div>
-    <textarea id="importBox" placeholder="Paste exported JSON here to restore…"></textarea>
-    <button class="btn" onclick="importState()">Import</button>
-    <div class="divider"></div>
-    <button class="btn danger" onclick="wipeAll()">Wipe all data</button>
-  </div>
-</div>
-
-<!-- Goal change modal (simple inline card) -->
-<div id="goalChange" class="card hidden" style="margin-top:12px;">
-  <h2>Change Goal</h2>
-  <div class="sub">Answer quick follow-ups so the plan adjusts.</div>
-  <div class="divider"></div>
-  <select id="newGoalType">
-    <option value="fat">Lose Fat</option>
-    <option value="muscle">Build Muscle</option>
-    <option value="hybrid">Hybrid / Recomp</option>
-    <option value="endurance">Endurance Focus</option>
-  </select>
-  <div class="row" style="margin-top:10px;">
-    <select id="newDays">
-      <option value="3">3 days / week</option>
-      <option value="4" selected>4 days / week</option>
-      <option value="5">5 days / week</option>
-      <option value="6">6 days / week</option>
-    </select>
-    <select id="newTime">
-      <option value="20">~20 min</option>
-      <option value="35" selected>~35 min</option>
-      <option value="50">~50 min</option>
-      <option value="65">~65 min</option>
-    </select>
-  </div>
-  <div class="divider"></div>
-  <button class="btn" onclick="applyGoalChange()">Apply changes</button>
-  <button class="btn secondary" onclick="closeGoalChange()">Cancel</button>
 </div>
 
 <script>
-  // ---------- State ----------
-  const DOW = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+/* ------------------------- State ------------------------- */
+const DOW = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
-  let state = {
-    v: 2,
-    units: "imperial", // imperial | metric
-    onboarded: false,
-    profile: {
-      goalType: "hybrid",
-      exp: "beginner",
-      age: null,
-      height: null, // inches or cm depending on units
-      weight: null, // lbs or kg depending on units
-      daysPerWeek: 4,
-      equipment: "gym",
-      timePerSession: 35,
-      mobility: "mid",
-      cardioPref: "some",
-      alcohol: 1,
-      lifestyle: "light",
-      limitations: "",
-      goalWeight: null,
-      timelineWeeks: null
-    },
-    plan: {
-      week: [],        // array of day objects
-      weekStartISO: null
-    },
-    logs: {
-      waterByISO: {},     // isoDate -> { glassesDone: [bool...], targetGlasses: n, glassSize: oz or ml }
-      workoutByISO: {},   // isoDate -> { completed: bool, checks: {exerciseId:bool}, notes:[] }
-      weightEntries: []   // {iso, value}
-    },
-    lastCoachNote: ""
+let state = {
+  v: 3,
+  units: "imperial", // imperial | metric
+  onboarded: false,
+  selectedISO: null, // day currently being viewed
+  profile: {
+    goalType: "hybrid",
+    exp: "beginner",
+    age: null,
+    height: null,
+    weight: null,
+    daysPerWeek: 4,
+    equipment: "gym",
+    timePerSession: 35,
+    mobility: "mid",
+    cardioPref: "some",
+    alcohol: 1,
+    lifestyle: "light",
+    limitations: "",
+    goalWeight: null,
+    timelineWeeks: null
+  },
+  plan: {
+    week: [],
+    weekStartISO: null
+  },
+  logs: {
+    waterByISO: {},
+    workoutByISO: {},
+    weightEntries: []
+  }
+};
+
+/* ------------------------- Helpers ------------------------- */
+const isoToday = () => new Date().toISOString().slice(0,10);
+function addDaysISO(iso, days){
+  const d = new Date(iso + "T00:00:00");
+  d.setDate(d.getDate() + days);
+  return d.toISOString().slice(0,10);
+}
+function dowFromISO(iso){
+  return new Date(iso + "T00:00:00").getDay();
+}
+function round1(x){ return Math.round(x*10)/10; }
+function clamp(n,a,b){ return Math.max(a, Math.min(b,n)); }
+function numOrNull(v){
+  const n = parseFloat(v);
+  return Number.isFinite(n) ? n : null;
+}
+function deepClone(x){ return JSON.parse(JSON.stringify(x)); }
+
+function lbsToKg(lbs){ return lbs / 2.2046226218; }
+function kgToLbs(kg){ return kg * 2.2046226218; }
+
+function fmtWeight(val){
+  if (val == null || val === "") return "—";
+  return state.units === "imperial" ? `${val} lb` : `${val} kg`;
+}
+
+/* ------------------------- Storage ------------------------- */
+function save(){
+  try { localStorage.setItem("myfitState", JSON.stringify(state)); } catch(e){}
+}
+function load(){
+  try{
+    const raw = localStorage.getItem("myfitState");
+    if(raw){
+      const parsed = JSON.parse(raw);
+      state = Object.assign({}, state, parsed);
+    }
+  }catch(e){}
+}
+
+/* ------------------------- Tabs ------------------------- */
+function showTab(name){
+  ["today","plan","goal","settings"].forEach(t=>{
+    document.getElementById(`view-${t}`).classList.add("hidden");
+    document.getElementById(`tab${t[0].toUpperCase()+t.slice(1)}`).classList.remove("active");
+  });
+  document.getElementById(`view-${name}`).classList.remove("hidden");
+  document.getElementById(`tab${name[0].toUpperCase()+name.slice(1)}`).classList.add("active");
+  renderAll();
+}
+
+/* ------------------------- Units ------------------------- */
+function setUnits(u){
+  if(state.units === u) return;
+  state.units = u;
+
+  document.getElementById("uImp").classList.toggle("active", u==="imperial");
+  document.getElementById("uMet").classList.toggle("active", u==="metric");
+
+  // convert stored profile numbers to keep real-world meaning consistent
+  const p = state.profile;
+
+  if (p.weight != null){
+    p.weight = (u==="metric") ? round1(lbsToKg(p.weight)) : round1(kgToLbs(p.weight));
+  }
+  if (p.height != null){
+    p.height = (u==="metric") ? round1(p.height * 2.54) : round1(p.height / 2.54);
+  }
+  if (p.goalWeight != null){
+    p.goalWeight = (u==="metric") ? round1(lbsToKg(p.goalWeight)) : round1(kgToLbs(p.goalWeight));
+  }
+
+  // water targets are stored per day; we leave old logs as-is (historic).
+  save();
+  renderAll();
+}
+
+/* ------------------------- Onboarding ------------------------- */
+function nextStep(n){
+  [1,2,3].forEach(s=>document.getElementById(`step${s}`).classList.add("hidden"));
+  document.getElementById(`step${n}`).classList.remove("hidden");
+}
+
+function finishOnboarding(){
+  const p = state.profile;
+  p.goalType = document.getElementById("goalType").value;
+  p.exp = document.getElementById("exp").value;
+  p.age = numOrNull(document.getElementById("age").value);
+  p.height = numOrNull(document.getElementById("height").value);
+  p.weight = numOrNull(document.getElementById("weight").value);
+  p.daysPerWeek = parseInt(document.getElementById("daysPerWeek").value, 10);
+  p.equipment = document.getElementById("equipment").value;
+  p.timePerSession = parseInt(document.getElementById("timePerSession").value, 10);
+  p.mobility = document.getElementById("mobility").value;
+  p.cardioPref = document.getElementById("cardioPref").value;
+  p.alcohol = parseInt(document.getElementById("alcohol").value, 10);
+  p.lifestyle = document.getElementById("lifestyle").value;
+  p.limitations = document.getElementById("limitations").value || "";
+  p.goalWeight = numOrNull(document.getElementById("goalWeight").value);
+  p.timelineWeeks = numOrNull(document.getElementById("timelineWeeks").value);
+
+  if (p.weight == null){
+    alert("Enter weight to generate plan + hydration.");
+    return;
+  }
+
+  state.onboarded = true;
+  state.selectedISO = isoToday();
+  buildWeekForISO(state.selectedISO, true);
+  ensureLogsForISO(state.selectedISO);
+
+  save();
+  document.getElementById("onboarding").classList.add("hidden");
+  showTab("today");
+}
+
+/* ------------------------- Plan generation ------------------------- */
+function weekStartSundayISO(anyISO){
+  const d = new Date(anyISO + "T00:00:00");
+  d.setDate(d.getDate() - d.getDay());
+  return d.toISOString().slice(0,10);
+}
+
+function pickTrainDays(n){
+  const patterns = {
+    3:[1,3,5],
+    4:[1,2,4,6],
+    5:[1,2,3,5,6],
+    6:[1,2,3,4,5,6]
   };
+  return patterns[n] || patterns[4];
+}
 
-  // ---------- Helpers ----------
-  const isoToday = () => new Date().toISOString().slice(0,10);
-  const dowIdx = () => new Date().getDay();
+function restTitleFor(p){
+  return p.mobility === "high" ? "Mobility + Easy Walk" : "Rest / Light Walk";
+}
 
-  function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
+function ex(id, name, setsReps){
+  return { id: id + "-" + Math.random().toString(16).slice(2,8), name, setsReps };
+}
 
-  function lbsToKg(lbs){ return lbs / 2.2046226218; }
-  function kgToLbs(kg){ return kg * 2.2046226218; }
-  function ozToMl(oz){ return oz * 29.5735295625; }
-  function mlToOz(ml){ return ml / 29.5735295625; }
+function workoutTemplatesFor(goal, equip, exp){
+  const rep = exp==="beginner" ? "3×8–10" : exp==="intermediate" ? "4×6–10" : "5×5–8";
+  const acc = exp==="beginner" ? "2×10–12" : "3×10–15";
 
-  function fmtWeight(val){
-    if (val == null || val === "") return "—";
-    return state.units === "imperial" ? `${val} lb` : `${val} kg`;
-  }
+  const lowerA = {
+    title:"Lower (A)",
+    exercises:[
+      ex("squat", equip==="bw" ? "Bodyweight Squat" : "Squat / Leg Press", rep),
+      ex("hinge", equip==="bw" ? "Glute Bridge" : "RDL / Deadlift Variation", rep),
+      ex("lunge", equip==="bw" ? "Split Squat" : "Split Squat / Lunge", acc),
+      ex("calves", "Calf Raises", acc),
+      ex("core", "Plank", "3×30–60s")
+    ]
+  };
+  const upperA = {
+    title:"Upper (A)",
+    exercises:[
+      ex("push", equip==="bw" ? "Push-ups" : "Bench Press / DB Press", rep),
+      ex("pull", equip==="bw" ? "Inverted Row" : "Row (Cable/DB)", rep),
+      ex("press", equip==="bw" ? "Pike Push-up" : "Overhead Press", acc),
+      ex("lat", equip==="bw" ? "Band Pull-down" : "Lat Pull-down / Pull-ups", acc),
+      ex("arms", "Curls + Triceps", "2–3×10–15")
+    ]
+  };
+  const full = {
+    title:"Full Body",
+    exercises:[
+      ex("squat", equip==="bw" ? "Bodyweight Squat" : "Leg Press / Squat", rep),
+      ex("push", equip==="bw" ? "Push-ups" : "DB Bench / Machine Press", rep),
+      ex("pull", equip==="bw" ? "Inverted Row" : "Seated Row", rep),
+      ex("hinge", equip==="bw" ? "Glute Bridge" : "RDL", acc),
+      ex("core", "Core (dead bug / plank)", "3 sets")
+    ]
+  };
+  const cardioShort = { title:"Cardio (Short)", exercises:[ ex("cardio","Intervals / Tempo","15–25 min") ] };
+  const cardioLong  = { title:"Cardio (Long)",  exercises:[ ex("cardio","Zone 2 / Easy","30–45 min") ] };
 
-  function save(){
-    try { localStorage.setItem("myfitState", JSON.stringify(state)); } catch(e){}
-  }
-  function load(){
-    try{
-      const raw = localStorage.getItem("myfitState");
-      if(raw){
-        const parsed = JSON.parse(raw);
-        // light merge for forward compatibility
-        state = Object.assign({}, state, parsed);
-      }
-    }catch(e){}
-  }
+  if(goal==="muscle") return [upperA, lowerA, upperA, lowerA];
+  if(goal==="endurance") return [cardioShort, full, cardioLong, full];
+  if(goal==="fat") return [full, cardioShort, upperA, lowerA];
+  return [upperA, cardioShort, lowerA, cardioLong];
+}
 
-  // ---------- Tabs ----------
-  function showTab(name){
-    ["today","plan","chat","settings"].forEach(t=>{
-      document.getElementById(`view-${t}`).classList.add("hidden");
-      document.getElementById(`tab${t[0].toUpperCase()+t.slice(1)}`).classList.remove("active");
-    });
-    document.getElementById(`view-${name}`).classList.remove("hidden");
-    document.getElementById(`tab${name[0].toUpperCase()+name.slice(1)}`).classList.add("active");
-    // onboarding stays separate
-    renderAll();
-  }
+function buildWeekForISO(anyISO, force){
+  const startISO = weekStartSundayISO(anyISO);
+  if(!force && state.plan.weekStartISO === startISO && state.plan.week?.length) return;
 
-  // ---------- Units toggle ----------
-  function setUnits(u){
-    state.units = u;
-    document.getElementById("uImp").classList.toggle("active", u==="imperial");
-    document.getElementById("uMet").classList.toggle("active", u==="metric");
+  const p = state.profile;
+  const trainDays = pickTrainDays(p.daysPerWeek);
+  const templates = workoutTemplatesFor(p.goalType, p.equipment, p.exp);
 
-    // Convert stored profile weight/height to new units so user sees consistent real-world values.
-    const p = state.profile;
+  state.plan.weekStartISO = startISO;
+  state.plan.week = [];
 
-    if (p.weight != null){
-      p.weight = (u==="metric") ? round1(lbsToKg(p.weight)) : round1(kgToLbs(p.weight));
-    }
-    if (p.height != null){
-      // height: inches <-> cm
-      p.height = (u==="metric") ? round1(p.height * 2.54) : round1(p.height / 2.54);
-    }
-    if (p.goalWeight != null){
-      p.goalWeight = (u==="metric") ? round1(lbsToKg(p.goalWeight)) : round1(kgToLbs(p.goalWeight));
-    }
-
-    save();
-    renderAll();
-  }
-
-  function round1(x){ return Math.round(x*10)/10; }
-
-  // ---------- Onboarding flow ----------
-  function nextStep(n){
-    [1,2,3].forEach(s=>document.getElementById(`step${s}`).classList.add("hidden"));
-    document.getElementById(`step${n}`).classList.remove("hidden");
-  }
-
-  function finishOnboarding(){
-    const p = state.profile;
-    p.goalType = document.getElementById("goalType").value;
-    p.exp = document.getElementById("exp").value;
-    p.age = numOrNull(document.getElementById("age").value);
-    p.height = numOrNull(document.getElementById("height").value);
-    p.weight = numOrNull(document.getElementById("weight").value);
-    p.daysPerWeek = parseInt(document.getElementById("daysPerWeek").value, 10);
-    p.equipment = document.getElementById("equipment").value;
-    p.timePerSession = parseInt(document.getElementById("timePerSession").value, 10);
-    p.mobility = document.getElementById("mobility").value;
-    p.cardioPref = document.getElementById("cardioPref").value;
-    p.alcohol = parseInt(document.getElementById("alcohol").value, 10);
-    p.lifestyle = document.getElementById("lifestyle").value;
-    p.limitations = document.getElementById("limitations").value || "";
-    p.goalWeight = numOrNull(document.getElementById("goalWeight").value);
-    p.timelineWeeks = numOrNull(document.getElementById("timelineWeeks").value);
-
-    if (p.weight == null){
-      alert("Enter weight to generate hydration + plan.");
-      return;
-    }
-
-    state.onboarded = true;
-    buildWeekPlan(true);
-    ensureTodayLogs();
-    save();
-
-    document.getElementById("onboarding").classList.add("hidden");
-    showTab("today");
-  }
-
-  function numOrNull(v){
-    const n = parseFloat(v);
-    return Number.isFinite(n) ? n : null;
-  }
-
-  // ---------- Plan generation ----------
-  function buildWeekPlan(resetWeekStart){
-    const today = new Date();
-    if (resetWeekStart || !state.plan.weekStartISO){
-      // weekStart = Sunday of current week
-      const d = new Date(today);
-      d.setDate(d.getDate() - d.getDay());
-      state.plan.weekStartISO = d.toISOString().slice(0,10);
-    }
-
-    const p = state.profile;
-    const days = p.daysPerWeek;
-
-    // Determine which days are training days (simple even spread).
-    const trainDays = pickTrainDays(days);
-
-    // Build base templates per goal
-    const templates = workoutTemplatesFor(p.goalType, p.equipment, p.exp);
-
-    // Assign templates to training days; rest otherwise.
-    let tIdx = 0;
-    state.plan.week = [];
-    for(let i=0;i<7;i++){
-      const iso = addDaysISO(state.plan.weekStartISO, i);
-      if(trainDays.includes(i)){
-        const tpl = templates[tIdx % templates.length];
-        state.plan.week.push({ iso, type:"workout", title: tpl.title, exercises: deepClone(tpl.exercises) });
-        tIdx++;
-      }else{
-        state.plan.week.push({ iso, type:"rest", title: restTitleFor(p), exercises: [] });
-      }
+  let t = 0;
+  for(let i=0;i<7;i++){
+    const iso = addDaysISO(startISO, i);
+    if(trainDays.includes(i)){
+      const tpl = templates[t % templates.length];
+      state.plan.week.push({ iso, type:"workout", title: tpl.title, exercises: deepClone(tpl.exercises) });
+      t++;
+    }else{
+      state.plan.week.push({ iso, type:"rest", title: restTitleFor(p), exercises: [] });
     }
   }
+}
 
-  function pickTrainDays(n){
-    // indices 0..6 (Sun..Sat). Even-ish spread.
-    const patterns = {
-      3:[1,3,5],       // Mon Wed Fri
-      4:[1,2,4,6],     // Mon Tue Thu Sat
-      5:[1,2,3,5,6],   // Mon Tue Wed Fri Sat
-      6:[1,2,3,4,5,6]  // Mon..Sat
+function getPlanForISO(iso){
+  buildWeekForISO(iso, false);
+  return state.plan.week.find(d => d.iso === iso);
+}
+
+/* ------------------------- Logs ------------------------- */
+function computeWaterTarget(){
+  // Imperial: target in 16oz glasses; Metric: 500ml glasses
+  const wt = state.profile.weight;
+  if (wt == null) return { unit:"oz", glassSize:16, targetGlasses:4 };
+
+  if (state.units === "imperial"){
+    const targetOz = Math.round(wt * 0.5);
+    const glassSize = 16;
+    const targetGlasses = clamp(Math.round(targetOz / glassSize), 3, 10);
+    return { unit:"oz", glassSize, targetGlasses };
+  } else {
+    const targetMl = Math.round(wt * 30);
+    const glassSize = 500;
+    const targetGlasses = clamp(Math.round(targetMl / glassSize), 3, 10);
+    return { unit:"ml", glassSize, targetGlasses };
+  }
+}
+
+function ensureLogsForISO(iso){
+  // water
+  if(!state.logs.waterByISO[iso]){
+    const tgt = computeWaterTarget();
+    state.logs.waterByISO[iso] = {
+      unit: tgt.unit,
+      glassSize: tgt.glassSize,
+      targetGlasses: tgt.targetGlasses,
+      glassesDone: Array(tgt.targetGlasses).fill(false)
     };
-    return patterns[n] || patterns[4];
   }
 
-  function restTitleFor(p){
-    if (p.mobility === "high") return "Mobility + Easy Walk";
-    return "Rest / Light Walk";
+  // workout
+  if(!state.logs.workoutByISO[iso]){
+    state.logs.workoutByISO[iso] = { completed:false, checks:{}, notes:[] };
+  }
+}
+
+/* ------------------------- Day navigation ------------------------- */
+function shiftSelected(delta){
+  state.selectedISO = addDaysISO(state.selectedISO, delta);
+  buildWeekForISO(state.selectedISO, false);
+  ensureLogsForISO(state.selectedISO);
+  save();
+  renderAll();
+}
+
+function jumpToToday(){
+  state.selectedISO = isoToday();
+  buildWeekForISO(state.selectedISO, false);
+  ensureLogsForISO(state.selectedISO);
+  save();
+  renderAll();
+}
+
+/* ------------------------- Water UI ------------------------- */
+function renderWater(){
+  const iso = state.selectedISO;
+  ensureLogsForISO(iso);
+
+  const w = state.logs.waterByISO[iso];
+  const targetText = (state.units==="imperial")
+    ? `Target: ${w.targetGlasses} × ${w.glassSize}oz`
+    : `Target: ${w.targetGlasses} × ${w.glassSize}ml`;
+  document.getElementById("waterTargetText").innerText = targetText;
+
+  const container = document.getElementById("glasses");
+  container.innerHTML = "";
+
+  w.glassesDone.forEach((done, idx)=>{
+    const wrap = document.createElement("div");
+    wrap.className = "glasswrap";
+
+    const g = document.createElement("button");
+    g.className = "glass" + (done ? " done":"");
+    g.style.cursor = "pointer";
+    g.style.border = "2px solid #3a3a40";
+    g.onclick = ()=>toggleGlassSelected(idx);
+
+    const fill = document.createElement("div");
+    fill.className = "fill";
+    const check = document.createElement("div");
+    check.className = "check";
+    check.textContent = "✓";
+
+    g.appendChild(fill);
+    g.appendChild(check);
+
+    const label = document.createElement("div");
+    label.className = "glasslabel";
+    label.textContent = (state.units==="imperial") ? "16oz" : `${w.glassSize}ml`;
+
+    wrap.appendChild(g);
+    wrap.appendChild(label);
+    container.appendChild(wrap);
+  });
+}
+
+function toggleGlassSelected(i){
+  const iso = state.selectedISO;
+  const w = state.logs.waterByISO[iso];
+  w.glassesDone[i] = !w.glassesDone[i];
+  save();
+  renderAll();
+}
+
+function resetWaterSelected(){
+  const iso = state.selectedISO;
+  const w = state.logs.waterByISO[iso];
+  w.glassesDone = w.glassesDone.map(()=>false);
+  save();
+  renderAll();
+}
+
+/* ------------------------- Workout UI ------------------------- */
+function renderWorkout(){
+  const iso = state.selectedISO;
+  ensureLogsForISO(iso);
+
+  const day = getPlanForISO(iso);
+  document.getElementById("dayTitle").innerText = day ? day.title : "—";
+
+  const log = state.logs.workoutByISO[iso];
+  const list = document.getElementById("workoutList");
+  list.innerHTML = "";
+
+  if(!day){
+    list.innerHTML = `<div class="sub">No plan found for this date.</div>`;
+    return;
   }
 
-  function workoutTemplatesFor(goal, equip, exp){
-    // Simple but legit MVP templates. We can expand after.
-    const rep = exp==="beginner" ? "3×8–10" : exp==="intermediate" ? "4×6–10" : "5×5–8";
-    const acc = exp==="beginner" ? "2×10–12" : "3×10–15";
-
-    const lowerA = {
-      title:"Lower (A)",
-      exercises:[
-        ex("squat", equip==="bw" ? "Bodyweight Squat" : "Squat / Leg Press", rep),
-        ex("hinge", equip==="bw" ? "Hip Hinge / Glute Bridge" : "RDL / Deadlift Variation", rep),
-        ex("lunge", equip==="bw" ? "Split Squat" : "Split Squat / Lunge", acc),
-        ex("calves", "Calf Raises", acc),
-        ex("core", "Plank", "3×30–60s")
-      ]
-    };
-    const upperA = {
-      title:"Upper (A)",
-      exercises:[
-        ex("push", equip==="bw" ? "Push-ups" : "Bench Press / DB Press", rep),
-        ex("pull", equip==="bw" ? "Inverted Row" : "Row (Cable/DB)", rep),
-        ex("press", equip==="bw" ? "Pike Push-up" : "Overhead Press", acc),
-        ex("lat", equip==="bw" ? "Band Pull-down" : "Lat Pull-down / Pull-ups", acc),
-        ex("arms", "Curls + Triceps", "2–3×10–15")
-      ]
-    };
-    const full = {
-      title:"Full Body",
-      exercises:[
-        ex("squat", equip==="bw" ? "Bodyweight Squat" : "Leg Press / Squat", rep),
-        ex("push", equip==="bw" ? "Push-ups" : "DB Bench / Machine Press", rep),
-        ex("pull", equip==="bw" ? "Inverted Row" : "Seated Row", rep),
-        ex("hinge", equip==="bw" ? "Glute Bridge" : "RDL", acc),
-        ex("core", "Core (dead bug / plank)", "3 sets")
-      ]
-    };
-
-    const cardioShort = { title:"Cardio (Short)", exercises:[ ex("cardio","Intervals / Tempo", minutesFor(goal, "short")) ] };
-    const cardioLong  = { title:"Cardio (Long)", exercises:[ ex("cardio","Zone 2 / Easy", minutesFor(goal, "long")) ] };
-
-    if(goal==="muscle") return [upperA, lowerA, upperA, lowerA];
-    if(goal==="endurance") return [cardioShort, full, cardioLong, full];
-    if(goal==="fat") return [full, cardioShort, upperA, lowerA];
-    return [upperA, cardioShort, lowerA, cardioLong]; // hybrid default
+  if(day.type === "rest"){
+    list.innerHTML = `<div class="sub">😌 Rest day. Use “Make an Audible” to log a workout or change the plan.</div>`;
+    return;
   }
 
-  function minutesFor(goal, kind){
-    if (kind==="short") return goal==="endurance" ? "25–35 min" : "15–25 min";
-    return goal==="endurance" ? "45–70 min" : "30–45 min";
+  day.exercises.forEach(ex=>{
+    const row = document.createElement("div");
+    row.className = "witem";
+
+    const check = document.createElement("button");
+    const done = !!log.checks[ex.id];
+    check.className = "wcheck" + (done ? " done":"");
+    check.textContent = done ? "✓" : "";
+    check.onclick = ()=>toggleExerciseSelected(ex.id);
+
+    const info = document.createElement("div");
+    const name = document.createElement("div");
+    name.className = "wname";
+    name.textContent = ex.name;
+
+    const meta = document.createElement("div");
+    meta.className = "wmeta";
+    meta.textContent = ex.setsReps;
+
+    info.appendChild(name);
+    info.appendChild(meta);
+
+    row.appendChild(check);
+    row.appendChild(info);
+    list.appendChild(row);
+  });
+
+  // show completion state in hint area
+  const completed = log.completed ? "✅ Completed" : "⏳ In progress";
+  document.getElementById("selDayHint").innerText = `Workout status: ${completed}`;
+}
+
+function toggleExerciseSelected(exId){
+  const iso = state.selectedISO;
+  const log = state.logs.workoutByISO[iso];
+  log.checks[exId] = !log.checks[exId];
+  save();
+  renderAll();
+}
+
+function completeSelectedWorkout(){
+  const iso = state.selectedISO;
+  const log = state.logs.workoutByISO[iso];
+  log.completed = true;
+  save();
+  renderAll();
+}
+
+function makeSelectedRest(){
+  const iso = state.selectedISO;
+  const idx = state.plan.week.findIndex(d=>d.iso===iso);
+  if(idx>=0){
+    state.plan.week[idx] = { iso, type:"rest", title: restTitleFor(state.profile), exercises: [] };
+  }
+  save();
+  renderAll();
+}
+
+/* ------------------------- Audible ------------------------- */
+function parseWorkoutTextToExercises(text){
+  // Simple MVP parser: split by commas/lines; if it contains sets/reps like 3x10 keep; else generic 3×8–12.
+  const raw = text
+    .replace(/\n/g, ",")
+    .split(",")
+    .map(s=>s.trim())
+    .filter(Boolean);
+
+  if(!raw.length) return [];
+
+  const out = [];
+  for(const item of raw){
+    const m = item.match(/(\d+)\s*[x×]\s*(\d+)(?:\s*[-–]\s*(\d+))?/i);
+    const setsReps = m ? `${m[1]}×${m[2]}${m[3] ? "–"+m[3] : ""}` : "3×8–12";
+    // remove obvious sets token from name
+    const name = item.replace(/(\d+)\s*[x×]\s*\d+(?:\s*[-–]\s*\d+)?/i,"").replace(/[:\-]+$/,"").trim() || "Workout Item";
+    out.push(ex("aud", titleCase(name), setsReps));
+  }
+  return out.slice(0, 10);
+}
+
+function applyAudible(adjustWeek){
+  const iso = state.selectedISO;
+  ensureLogsForISO(iso);
+
+  const txt = (document.getElementById("audibleIn").value || "").trim();
+  if(!txt){
+    document.getElementById("audibleOut").innerText = "Type what you did or what you want changed.";
+    return;
   }
 
-  function ex(id, name, setsReps){
-    return { id: id + "-" + Math.random().toString(16).slice(2,8), name, setsReps };
-  }
+  const day = getPlanForISO(iso);
+  const idx = state.plan.week.findIndex(d=>d.iso===iso);
 
-  function deepClone(x){ return JSON.parse(JSON.stringify(x)); }
-
-  function addDaysISO(iso, days){
-    const d = new Date(iso + "T00:00:00");
-    d.setDate(d.getDate() + days);
-    return d.toISOString().slice(0,10);
-  }
-
-  // ---------- Logs (water/workout) ----------
-  function ensureTodayLogs(){
-    const iso = isoToday();
-    // Water target
-    const wt = state.profile.weight;
-    const water = computeWaterTarget(wt);
-    const w = state.logs.waterByISO[iso] || null;
-    if(!w){
-      state.logs.waterByISO[iso] = {
-        unit: water.unit,
-        glassSize: water.glassSize,
-        targetGlasses: water.targetGlasses,
-        glassesDone: Array(water.targetGlasses).fill(false)
-      };
-    }
-
-    // Workout log
-    if(!state.logs.workoutByISO[iso]){
-      state.logs.workoutByISO[iso] = { completed:false, checks:{}, notes:[] };
-    }
-  }
-
-  function computeWaterTarget(weight){
-    // MacroFactor-ish simple rule:
-    // Imperial: ~0.5 oz per lb baseline, show 16oz glasses.
-    // Metric: ~30 ml per kg baseline, show 500ml glasses.
-    if (state.units === "imperial"){
-      const targetOz = Math.round(weight * 0.5); // baseline
-      const glassSize = 16;
-      const targetGlasses = clamp(Math.round(targetOz / glassSize), 3, 10);
-      return { unit:"oz", target: targetGlasses * glassSize, glassSize, targetGlasses };
-    } else {
-      const targetMl = Math.round(weight * 30); // baseline
-      const glassSize = 500;
-      const targetGlasses = clamp(Math.round(targetMl / glassSize), 3, 10);
-      return { unit:"ml", target: targetGlasses * glassSize, glassSize, targetGlasses };
-    }
-  }
-
-  // ---------- Water UI ----------
-  function renderWater(){
-    ensureTodayLogs();
-    const iso = isoToday();
-    const w = state.logs.waterByISO[iso];
-
-    const targetText = state.units==="imperial"
-      ? `Target: ${w.targetGlasses} × ${w.glassSize}oz`
-      : `Target: ${w.targetGlasses} × ${w.glassSize}ml`;
-
-    document.getElementById("waterTargetText").innerText = targetText;
-
-    const container = document.getElementById("glasses");
-    container.innerHTML = "";
-
-    w.glassesDone.forEach((done, idx)=>{
-      const wrap = document.createElement("div");
-      wrap.className = "glasswrap";
-
-      const g = document.createElement("button");
-      g.className = "glass" + (done ? " done":"");
-      g.style.cursor = "pointer";
-      g.onclick = ()=>toggleGlass(idx);
-
-      const fill = document.createElement("div");
-      fill.className = "fill";
-      const check = document.createElement("div");
-      check.className = "check";
-      check.textContent = "✓";
-
-      g.appendChild(fill);
-      g.appendChild(check);
-
-      const label = document.createElement("div");
-      label.className = "glasslabel";
-      label.textContent = state.units==="imperial" ? "16oz" : `${w.glassSize}ml`;
-
-      wrap.appendChild(g);
-      wrap.appendChild(label);
-      container.appendChild(wrap);
-    });
-  }
-
-  function toggleGlass(i){
-    const iso = isoToday();
-    const w = state.logs.waterByISO[iso];
-    w.glassesDone[i] = !w.glassesDone[i];
-    save();
-    renderAll();
-  }
-
-  function resetWaterToday(){
-    const iso = isoToday();
-    const w = state.logs.waterByISO[iso];
-    w.glassesDone = w.glassesDone.map(()=>false);
-    save();
-    renderAll();
-  }
-
-  // ---------- Workout UI ----------
-  function getTodayPlan(){
-    const iso = isoToday();
-    // Ensure week plan exists for current week
-    if(!state.plan.weekStartISO || !state.plan.week.length) buildWeekPlan(true);
-
-    // If weekStart not matching this week (e.g., time passed), rebuild.
-    const wkStart = new Date(state.plan.weekStartISO + "T00:00:00");
-    const now = new Date();
-    const thisSunday = new Date(now);
-    thisSunday.setDate(thisSunday.getDate() - thisSunday.getDay());
-    const thisSundayISO = thisSunday.toISOString().slice(0,10);
-    if (thisSundayISO !== state.plan.weekStartISO){
-      buildWeekPlan(true);
-    }
-
-    return state.plan.week.find(d => d.iso === iso) || state.plan.week[dowIdx()];
-  }
-
-  function renderWorkout(){
-    ensureTodayLogs();
-    const day = getTodayPlan();
-    document.getElementById("todayTitle").innerText = day.title;
-
-    const iso = isoToday();
-    const log = state.logs.workoutByISO[iso];
-
-    const list = document.getElementById("workoutList");
-    list.innerHTML = "";
-
-    if(day.type === "rest"){
-      const p = document.createElement("div");
-      p.className = "sub";
-      p.textContent = "Rest day. Use Coach to swap or pull a workout forward.";
-      list.appendChild(p);
-      return;
-    }
-
-    day.exercises.forEach(ex=>{
-      const row = document.createElement("div");
-      row.className = "witem";
-
-      const check = document.createElement("button");
-      const done = !!log.checks[ex.id];
-      check.className = "wcheck" + (done ? " done":"");
-      check.textContent = done ? "✓" : "";
-      check.onclick = ()=>toggleExercise(ex.id);
-
-      const info = document.createElement("div");
-      const name = document.createElement("div");
-      name.className = "wname";
-      name.textContent = ex.name;
-
-      const meta = document.createElement("div");
-      meta.className = "wmeta";
-      meta.textContent = ex.setsReps;
-
-      info.appendChild(name);
-      info.appendChild(meta);
-
-      row.appendChild(check);
-      row.appendChild(info);
-      list.appendChild(row);
-    });
-  }
-
-  function toggleExercise(exId){
-    const iso = isoToday();
-    const log = state.logs.workoutByISO[iso];
-    log.checks[exId] = !log.checks[exId];
-    save();
-    renderAll();
-  }
-
-  function completeTodayWorkout(){
-    const iso = isoToday();
-    const log = state.logs.workoutByISO[iso];
-    log.completed = true;
-    save();
-    renderAll();
-  }
-
-  function markTodayRest(){
-    const iso = isoToday();
-    const idx = state.plan.week.findIndex(d=>d.iso===iso);
+  // If user says "rest" explicitly, set rest
+  const lower = txt.toLowerCase();
+  if(lower.includes("rest") && (lower.includes("took") || lower === "rest" || lower.includes("made it a rest"))){
     if(idx>=0){
       state.plan.week[idx] = { iso, type:"rest", title: restTitleFor(state.profile), exercises: [] };
     }
-    // keep checked items in log as history; we won't delete.
+    state.logs.workoutByISO[iso].notes.push({ ts: Date.now(), text: "Audible: " + txt });
+    document.getElementById("audibleOut").innerText = "Updated: set this day to Rest. 😌";
+    document.getElementById("audibleIn").value = "";
+    if(adjustWeek) rebalanceWeekAfterChange(idx);
     save();
     renderAll();
+    return;
   }
 
-  // ---------- Weekly calendar ----------
-  function renderWeek(){
-    const grid = document.getElementById("weekGrid");
-    grid.innerHTML = "";
-    const today = isoToday();
+  // Otherwise, treat as workout logging/replacing the day plan
+  const exs = parseWorkoutTextToExercises(txt);
+  const title = inferTitleFromText(txt) || "Logged Workout";
 
-    state.plan.week.forEach(d=>{
-      const box = document.createElement("div");
-      box.className = "day" + (d.iso===today ? " today":"");
-
-      const dow = document.createElement("div");
-      dow.className = "dow";
-      const dd = new Date(d.iso + "T00:00:00");
-      dow.textContent = DOW[dd.getDay()];
-
-      const what = document.createElement("div");
-      what.className = "what";
-      what.textContent = d.title;
-
-      box.appendChild(dow);
-      box.appendChild(what);
-      grid.appendChild(box);
-    });
+  if(idx>=0){
+    state.plan.week[idx] = {
+      iso,
+      type:"workout",
+      title,
+      exercises: exs.length ? exs : [ex("aud","General Training","30–45 min")]
+    };
   }
 
-  // ---------- Goal tracker ----------
-  function renderGoal(){
-    const p = state.profile;
-    const goalName = ({
-      fat:"Lose Fat",
-      muscle:"Build Muscle",
-      hybrid:"Hybrid / Recomp",
-      endurance:"Endurance"
-    })[p.goalType] || "—";
+  // mark as completed? no—keep user choice; but we do store notes
+  state.logs.workoutByISO[iso].notes.push({ ts: Date.now(), text: "Audible: " + txt });
 
-    document.getElementById("kGoal").innerText = goalName;
+  document.getElementById("audibleOut").innerText =
+    adjustWeek
+      ? "Updated this day and rebalanced the rest of the week. ✅"
+      : "Updated this day. ✅ (Use “Update + adjust week” to rebalance the week.)";
 
-    // Adherence: percent of this week's planned workouts completed
-    const completed = countCompletedThisWeek();
-    const planned = countPlannedWorkoutsThisWeek();
-    const adh = planned ? Math.round((completed/planned)*100) : 0;
-    document.getElementById("kAdh").innerText = `${adh}%`;
+  document.getElementById("audibleIn").value = "";
 
-    // Progress bar: if goal weight provided, estimate progress via latest weight entry
-    const latest = getLatestWeight();
-    let bar = 0;
-    let text = "Add goal weight + log weight to track progress.";
+  if(adjustWeek) rebalanceWeekAfterChange(idx);
 
-    if (p.goalWeight != null && latest != null && p.weight != null){
-      // very simple: progress from start weight (current at onboarding) toward goal
-      const start = p.weight;
-      const goal = p.goalWeight;
-      const cur = latest;
+  save();
+  renderAll();
+}
 
-      // For muscle/endurance goals, this is rough. Still useful.
-      const total = Math.abs(goal - start);
-      const done = Math.abs(cur - start);
-      bar = total > 0 ? clamp(Math.round((done/total)*100), 0, 100) : 0;
+function rebalanceWeekAfterChange(changedIdx){
+  // Keep weekly workout count aligned with daysPerWeek by flipping the next rest/workout.
+  const desired = state.profile.daysPerWeek;
+  const current = state.plan.week.filter(d=>d.type==="workout").length;
 
-      text = `Start: ${fmtWeight(round1(start))} → Goal: ${fmtWeight(round1(goal))} | Latest: ${fmtWeight(round1(cur))}`;
+  if(current === desired) return;
+
+  if(current > desired){
+    // too many workouts: find a workout day (after changed day) and convert to rest
+    const cutIdx = state.plan.week.findIndex((d,i)=> i!==changedIdx && i>changedIdx && d.type==="workout");
+    if(cutIdx>=0){
+      state.plan.week[cutIdx] = { iso: state.plan.week[cutIdx].iso, type:"rest", title: restTitleFor(state.profile), exercises: [] };
     }
-
-    document.getElementById("goalBar").style.width = `${bar}%`;
-    document.getElementById("goalText").innerText = text;
-
-    // Daily summary
-    document.getElementById("dailySummary").innerText = makeDailySummary();
+    return;
   }
 
-  function countPlannedWorkoutsThisWeek(){
-    return state.plan.week.filter(d=>d.type==="workout").length;
-  }
-  function countCompletedThisWeek(){
-    let c = 0;
-    for(const d of state.plan.week){
-      const log = state.logs.workoutByISO[d.iso];
-      if(log && log.completed) c++;
-    }
-    return c;
-  }
-
-  function getLatestWeight(){
-    const arr = state.logs.weightEntries;
-    if(!arr.length) return null;
-    const sorted = [...arr].sort((a,b)=>a.iso.localeCompare(b.iso));
-    return sorted[sorted.length-1].value;
-  }
-
-  function makeDailySummary(){
-    const iso = isoToday();
-    const w = state.logs.waterByISO[iso];
-    const wl = state.logs.workoutByISO[iso];
-    const waterDone = w ? w.glassesDone.filter(Boolean).length : 0;
-    const waterTarget = w ? w.targetGlasses : 0;
-
-    const day = getTodayPlan();
-    const workoutType = day.type;
-
-    const waterText = `Water: ${waterDone}/${waterTarget} glasses`;
-    const workoutText = workoutType==="rest"
-      ? "Workout: Rest day"
-      : `Workout: ${wl && wl.completed ? "Completed ✅" : "In progress"}`;
-
-    return `${waterText} • ${workoutText}`;
-  }
-
-  // ---------- Coach logic (rules-based MVP) ----------
-  function runCoach(){
-    const txt = (document.getElementById("chatIn").value || "").toLowerCase().trim();
-    if(!txt){ document.getElementById("chatOut").innerText = "Type something."; return; }
-
-    let note = "";
-    const todayISO = isoToday();
-    const dayIdx = state.plan.week.findIndex(d=>d.iso===todayISO);
-    const day = getTodayPlan();
-
-    // 1) rest today
-    if (txt.includes("rest today") || txt === "rest" || txt.includes("take today as a rest")){
-      if(dayIdx>=0){
-        state.plan.week[dayIdx] = { iso: todayISO, type:"rest", title: restTitleFor(state.profile), exercises: [] };
-        // Move the next upcoming rest day to be the displaced workout (if any)
-        // MVP: just keep week balanced by turning next rest into a workout template
-        const nextRestIdx = state.plan.week.findIndex((d,i)=> i>dayIdx && d.type==="rest");
-        if(nextRestIdx>=0){
-          const templates = workoutTemplatesFor(state.profile.goalType, state.profile.equipment, state.profile.exp);
-          const t = templates[0];
-          state.plan.week[nextRestIdx] = { iso: state.plan.week[nextRestIdx].iso, type:"workout", title: t.title, exercises: deepClone(t.exercises) };
-        }
-      }
-      note = "Set today to Rest and reshuffled upcoming day to keep weekly volume.";
-    }
-
-    // 2) only 20 minutes
-    else if (txt.includes("20 minutes") || txt.includes("only 20") || txt.includes("short on time")){
-      if(day.type==="workout"){
-        // Keep checked items; reduce remaining by trimming un-checked exercises
-        trimWorkoutToTime(day, 20);
-        note = "Trimmed today to a ~20 min minimum plan while keeping completed items.";
-      } else {
-        note = "Today is Rest. If you want a short session, say: “pull a workout forward”.";
-      }
-    }
-
-    // 3) swap X for Y (simple parser)
-    else if (txt.startsWith("swap ") && txt.includes(" for ")){
-      if(day.type!=="workout"){ note = "Today is Rest. Say “pull a workout forward” or “swap tomorrow …” (Phase 2)."; }
-      else{
-        const parts = txt.slice(5).split(" for ");
-        const from = (parts[0]||"").trim();
-        const to = (parts[1]||"").trim();
-        const changed = swapExerciseName(day, from, to);
-        note = changed ? `Swapped “${from}” → “${to}” and kept your checkmarks.` : `Couldn't find “${from}” in today’s list.`;
-      }
-    }
-
-    // 4) pain / limitation quick adjust
-    else if (txt.includes("knee") || txt.includes("back") || txt.includes("shoulder") || txt.includes("pain")){
-      if(day.type==="workout"){
-        autoModifyForPain(day, txt);
-        note = "Adjusted today to reduce aggravating movements (MVP rules).";
-      } else note = "Logged. If you want a workout change, say “pull a workout forward”.";
-    }
-
-    // 5) pull a workout forward (if today is rest)
-    else if (txt.includes("pull a workout forward") || txt.includes("i want to train today")){
-      if(day.type==="rest" && dayIdx>=0){
-        const templates = workoutTemplatesFor(state.profile.goalType, state.profile.equipment, state.profile.exp);
-        const t = templates[0];
-        state.plan.week[dayIdx] = { iso: todayISO, type:"workout", title: t.title, exercises: deepClone(t.exercises) };
-        note = "Converted today to a workout. (We can make this smarter next.)";
-      } else note = "Today is already a workout day.";
-    }
-
-    else{
-      note = "MVP Coach understood: rest today, swap X for Y, only 20 minutes, pain (knee/back/shoulder), pull a workout forward.";
-    }
-
-    state.lastCoachNote = note;
-    document.getElementById("chatOut").innerText = note;
-    document.getElementById("chatIn").value = "";
-    ensureTodayLogs();
-    save();
-    renderAll();
-  }
-
-  function trimWorkoutToTime(day, minutes){
-    const iso = isoToday();
-    const log = state.logs.workoutByISO[iso];
-    // Keep checked exercises; drop some unchecked from bottom until 3 remain.
-    const kept = [];
-    const unchecked = [];
-    for(const ex of day.exercises){
-      if(log.checks[ex.id]) kept.push(ex);
-      else unchecked.push(ex);
-    }
-    // target count heuristic
-    const targetCount = minutes <= 20 ? 3 : 4;
-    const newList = kept.slice();
-    for(const ex of unchecked){
-      if(newList.length < targetCount) newList.push(ex);
-    }
-    day.exercises = newList;
-  }
-
-  function swapExerciseName(day, from, to){
-    const iso = isoToday();
-    const log = state.logs.workoutByISO[iso];
-    let found = false;
-
-    for(const ex of day.exercises){
-      if(ex.name.toLowerCase().includes(from)){
-        // If this exercise was checked, keep it checked by leaving ID alone; just rename
-        ex.name = titleCase(to);
-        found = true;
-        // keep sets/reps same
-        // keep check status since id stays same
-        log.checks[ex.id] = !!log.checks[ex.id];
-        break;
-      }
-    }
-    return found;
-  }
-
-  function autoModifyForPain(day, txt){
-    const t = txt;
-    for(const ex of day.exercises){
-      const n = ex.name.toLowerCase();
-      if(t.includes("knee")){
-        if(n.includes("squat") || n.includes("lunge") || n.includes("split squat")){
-          ex.name = "Leg Press (pain-friendly) / Step-up low";
-        }
-      }
-      if(t.includes("back")){
-        if(n.includes("deadlift") || n.includes("rdl") || n.includes("hinge")){
-          ex.name = "Hip Thrust / Glute Bridge (back-friendly)";
-        }
-      }
-      if(t.includes("shoulder")){
-        if(n.includes("overhead") || n.includes("press")){
-          ex.name = "Incline Press (light) / Landmine Press";
-        }
-      }
+  if(current < desired){
+    // too few workouts: find a rest day (after changed day) and convert to a template workout
+    const addIdx = state.plan.week.findIndex((d,i)=> i!==changedIdx && i>changedIdx && d.type==="rest");
+    if(addIdx>=0){
+      const tpls = workoutTemplatesFor(state.profile.goalType, state.profile.equipment, state.profile.exp);
+      const tpl = tpls[0];
+      state.plan.week[addIdx] = { iso: state.plan.week[addIdx].iso, type:"workout", title: tpl.title, exercises: deepClone(tpl.exercises) };
     }
   }
+}
 
-  function titleCase(s){
-    return s.replace(/\w\S*/g, (t)=>t.charAt(0).toUpperCase()+t.substr(1));
-  }
+function inferTitleFromText(txt){
+  const t = txt.toLowerCase();
+  if(t.includes("leg") || t.includes("squat") || t.includes("rdl")) return "Legs (Logged)";
+  if(t.includes("bench") || t.includes("chest")) return "Upper Push (Logged)";
+  if(t.includes("row") || t.includes("pull")) return "Upper Pull (Logged)";
+  if(t.includes("run") || t.includes("mile") || t.includes("cardio")) return "Cardio (Logged)";
+  return "";
+}
 
-  // ---------- Manual import (MVP) ----------
-  function logManual(){
-    const txt = (document.getElementById("importIn").value || "").trim();
-    if(!txt){ document.getElementById("importOut").innerText = "Paste something."; return; }
-    const iso = isoToday();
-    ensureTodayLogs();
-    state.logs.workoutByISO[iso].notes.push({ ts: Date.now(), text: txt });
-    document.getElementById("importOut").innerText = "Logged. (Phase 2: parse & auto-check items.)";
-    document.getElementById("importIn").value = "";
-    save();
-  }
+function titleCase(s){
+  return s.replace(/\w\S*/g, (t)=>t.charAt(0).toUpperCase()+t.substr(1));
+}
 
-  // ---------- Goal change ----------
-  function openGoalChange(){
-    document.getElementById("goalChange").classList.remove("hidden");
-    document.getElementById("newGoalType").value = state.profile.goalType;
-    document.getElementById("newDays").value = String(state.profile.daysPerWeek);
-    document.getElementById("newTime").value = String(state.profile.timePerSession);
-  }
-  function closeGoalChange(){
-    document.getElementById("goalChange").classList.add("hidden");
-  }
-  function applyGoalChange(){
-    state.profile.goalType = document.getElementById("newGoalType").value;
-    state.profile.daysPerWeek = parseInt(document.getElementById("newDays").value,10);
-    state.profile.timePerSession = parseInt(document.getElementById("newTime").value,10);
-    buildWeekPlan(true);
-    ensureTodayLogs();
-    closeGoalChange();
-    save();
-    renderAll();
-  }
+/* ------------------------- Plan UI ------------------------- */
+function renderWeek(){
+  const grid = document.getElementById("weekGrid");
+  grid.innerHTML = "";
 
-  // ---------- Settings: weight entry ----------
-  function saveWeight(){
-    const v = numOrNull(document.getElementById("setWeight").value);
-    if(v == null){ alert("Enter a number."); return; }
-    state.logs.weightEntries.push({ iso: isoToday(), value: v });
-    document.getElementById("setWeight").value = "";
-    save();
-    renderAll();
-  }
+  const sel = state.selectedISO;
 
-  // ---------- Export/Import ----------
-  function exportState(){
-    const box = document.getElementById("exportBox");
-    box.classList.remove("hidden");
-    box.value = JSON.stringify(state);
-  }
+  for(const d of state.plan.week){
+    const box = document.createElement("div");
+    box.className = "day" + (d.iso===sel ? " sel":"");
 
-  function importState(){
-    const raw = document.getElementById("importBox").value.trim();
-    if(!raw){ alert("Paste JSON."); return; }
-    try{
-      const parsed = JSON.parse(raw);
-      state = Object.assign({}, state, parsed);
+    const dow = document.createElement("div");
+    dow.className = "dow";
+    dow.textContent = DOW[dowFromISO(d.iso)];
+
+    const what = document.createElement("div");
+    what.className = "what";
+    what.textContent = d.title;
+
+    box.appendChild(dow);
+    box.appendChild(what);
+    box.onclick = ()=>{
+      state.selectedISO = d.iso;
+      ensureLogsForISO(d.iso);
       save();
-      alert("Imported.");
       renderAll();
-    }catch(e){
-      alert("Invalid JSON.");
-    }
+      showTab("today");
+    };
+
+    grid.appendChild(box);
+  }
+}
+
+/* ------------------------- Analyze ------------------------- */
+function analyzeDay(){
+  const iso = state.selectedISO;
+  ensureLogsForISO(iso);
+  const day = getPlanForISO(iso);
+  const w = state.logs.waterByISO[iso];
+  const wl = state.logs.workoutByISO[iso];
+
+  const waterDone = w.glassesDone.filter(Boolean).length;
+  const waterTarget = w.targetGlasses;
+
+  const workoutStatus =
+    day.type==="rest"
+      ? "Rest day 😌"
+      : (wl.completed ? "Workout completed ✅" : "Workout not marked complete ⏳");
+
+  const adherence = computeWeeklyAdherence();
+
+  const notes = wl.notes?.length ? `Notes logged: ${wl.notes.length}` : "No notes logged";
+
+  document.getElementById("analysisOut").innerText =
+    `🧠 Analysis for ${iso}: Water ${waterDone}/${waterTarget} • ${workoutStatus} • Weekly adherence ${adherence}% • ${notes}`;
+}
+
+function computeWeeklyAdherence(){
+  const planned = state.plan.week.filter(d=>d.type==="workout").length;
+  if(!planned) return 0;
+  let completed = 0;
+  for(const d of state.plan.week){
+    const log = state.logs.workoutByISO[d.iso];
+    if(d.type==="workout" && log?.completed) completed++;
+  }
+  return Math.round((completed/planned)*100);
+}
+
+/* ------------------------- Goal tracker ------------------------- */
+function renderGoal(){
+  const p = state.profile;
+  const goalName = ({
+    fat:"Lose Fat",
+    muscle:"Build Muscle",
+    hybrid:"Hybrid / Recomp",
+    endurance:"Endurance"
+  })[p.goalType] || "—";
+
+  document.getElementById("kGoal").innerText = goalName;
+
+  const adh = computeWeeklyAdherence();
+  document.getElementById("kAdh").innerText = `${adh}%`;
+
+  const latest = getLatestWeight();
+  let bar = 0;
+  let text = "Add goal weight + log weight to track progress.";
+
+  if (p.goalWeight != null && latest != null && p.weight != null){
+    const start = p.weight;
+    const goal = p.goalWeight;
+    const cur = latest;
+
+    const total = Math.abs(goal - start);
+    const done = Math.abs(cur - start);
+    bar = total > 0 ? clamp(Math.round((done/total)*100), 0, 100) : 0;
+
+    text = `Start: ${fmtWeight(round1(start))} → Goal: ${fmtWeight(round1(goal))} | Latest: ${fmtWeight(round1(cur))}`;
   }
 
-  function wipeAll(){
-    if(!confirm("Wipe all myFit data?")) return;
-    try{ localStorage.removeItem("myfitState"); }catch(e){}
-    location.reload();
+  document.getElementById("goalBar").style.width = `${bar}%`;
+  document.getElementById("goalText").innerText = text;
+
+  document.getElementById("weeklySummary").innerText =
+    `This week: adherence ${adh}% • workouts completed ${state.plan.week.filter(d=>state.logs.workoutByISO[d.iso]?.completed).length}/${state.plan.week.filter(d=>d.type==="workout").length}.`;
+}
+
+function getLatestWeight(){
+  const arr = state.logs.weightEntries || [];
+  if(!arr.length) return null;
+  const sorted = [...arr].sort((a,b)=>a.iso.localeCompare(b.iso));
+  return sorted[sorted.length-1].value;
+}
+
+/* ------------------------- Goal change ------------------------- */
+function openGoalChange(){
+  document.getElementById("goalChange").classList.remove("hidden");
+  document.getElementById("newGoalType").value = state.profile.goalType;
+  document.getElementById("newDays").value = String(state.profile.daysPerWeek);
+  document.getElementById("newTime").value = String(state.profile.timePerSession);
+}
+function closeGoalChange(){
+  document.getElementById("goalChange").classList.add("hidden");
+}
+function applyGoalChange(){
+  state.profile.goalType = document.getElementById("newGoalType").value;
+  state.profile.daysPerWeek = parseInt(document.getElementById("newDays").value,10);
+  state.profile.timePerSession = parseInt(document.getElementById("newTime").value,10);
+
+  buildWeekForISO(state.selectedISO, true);
+  closeGoalChange();
+  save();
+  renderAll();
+}
+
+/* ------------------------- Settings weight entry ------------------------- */
+function saveWeight(){
+  const v = numOrNull(document.getElementById("setWeight").value);
+  if(v == null){ alert("Enter a number."); return; }
+  state.logs.weightEntries.push({ iso: state.selectedISO || isoToday(), value: v });
+  document.getElementById("setWeight").value = "";
+  save();
+  renderAll();
+}
+
+/* ------------------------- Export / Import ------------------------- */
+function exportState(){
+  const box = document.getElementById("exportBox");
+  box.classList.remove("hidden");
+  box.value = JSON.stringify(state);
+}
+function importState(){
+  const raw = document.getElementById("importBox").value.trim();
+  if(!raw){ alert("Paste JSON."); return; }
+  try{
+    const parsed = JSON.parse(raw);
+    state = Object.assign({}, state, parsed);
+    save();
+    alert("Imported.");
+    renderAll();
+  }catch(e){
+    alert("Invalid JSON.");
   }
+}
+function wipeAll(){
+  if(!confirm("Wipe all myFit data?")) return;
+  try{ localStorage.removeItem("myfitState"); }catch(e){}
+  location.reload();
+}
 
-  // ---------- Render ----------
-  function renderAll(){
-    // Show/hide onboarding
-    if(!state.onboarded){
-      document.getElementById("onboarding").classList.remove("hidden");
-      // Hide views
-      ["today","plan","chat","settings"].forEach(v=>document.getElementById(`view-${v}`).classList.add("hidden"));
-      return;
-    } else {
-      document.getElementById("onboarding").classList.add("hidden");
-    }
+/* ------------------------- Render ------------------------- */
+function renderDayHeader(){
+  const iso = state.selectedISO;
+  const d = new Date(iso + "T00:00:00");
+  const dow = DOW[d.getDay()];
+  const mm = (d.getMonth()+1).toString().padStart(2,"0");
+  const dd = d.getDate().toString().padStart(2,"0");
 
-    // Update onboarding placeholders to match units
-    document.getElementById("weightSavedText").innerText = `Saved weight entries: ${state.logs.weightEntries.length}`;
-    document.getElementById("kGoal").innerText = "—";
+  document.getElementById("selDateChip").innerHTML = `${dow} <small>${mm}/${dd}</small>`;
 
-    // Ensure logs and render
-    ensureTodayLogs();
-    renderWater();
-    renderWorkout();
-    renderWeek();
-    renderGoal();
+  const isToday = (iso === isoToday());
+  document.getElementById("selDayHint").innerText = isToday ? "📍 You are viewing Today." : "🗓️ Viewing a past/future day.";
+}
 
-    // Settings weight placeholder
-    document.getElementById("setWeight").placeholder = state.units==="imperial" ? "Current weight (lb)" : "Current weight (kg)";
-  }
-
-  // ---------- Boot ----------
-  load();
-
-  // Reflect units toggle UI
+function renderAll(){
+  // units UI
   document.getElementById("uImp").classList.toggle("active", state.units==="imperial");
   document.getElementById("uMet").classList.toggle("active", state.units==="metric");
 
-  // If onboarded, ensure plan/logs exist
-  if(state.onboarded){
-    if(!state.plan.weekStartISO || !state.plan.week.length) buildWeekPlan(true);
-    ensureTodayLogs();
+  // onboarding gate
+  if(!state.onboarded){
+    document.getElementById("onboarding").classList.remove("hidden");
+    ["today","plan","goal","settings"].forEach(v=>document.getElementById(`view-${v}`).classList.add("hidden"));
+    return;
+  } else {
+    document.getElementById("onboarding").classList.add("hidden");
   }
 
-  // Default tab
-  if(state.onboarded) showTab("today");
-  else renderAll();
+  // selected day
+  if(!state.selectedISO) state.selectedISO = isoToday();
+
+  // ensure plan/logs aligned
+  buildWeekForISO(state.selectedISO, false);
+  ensureLogsForISO(state.selectedISO);
+
+  // placeholders
+  document.getElementById("setWeight").placeholder = state.units==="imperial" ? "Current weight (lb)" : "Current weight (kg)";
+  document.getElementById("weightSavedText").innerText = `Saved weight entries: ${state.logs.weightEntries.length}`;
+
+  renderDayHeader();
+  renderWater();
+  renderWorkout();
+  renderWeek();
+  renderGoal();
+
+  // reset analysis output when moving days unless already meaningful
+  if(document.getElementById("analysisOut").innerText === "—"){
+    // keep
+  }
+}
+
+/* ------------------------- Boot ------------------------- */
+load();
+if(state.onboarded){
+  if(!state.selectedISO) state.selectedISO = isoToday();
+  buildWeekForISO(state.selectedISO, true);
+  ensureLogsForISO(state.selectedISO);
+  save();
+  showTab("today");
+} else {
+  renderAll();
+}
 </script>
 </body>
 </html>

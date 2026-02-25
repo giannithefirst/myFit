@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>myFit</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #111;
+      color: white;
+    }
+    h1 { margin-top: 0; }
+    button {
+      padding: 12px;
+      margin-top: 10px;
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      background: #00c896;
+      color: white;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: none;
+    }
+    .card {
+      background: #1c1c1e;
+      padding: 15px;
+      border-radius: 12px;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>myFit</h1>
+
+<div class="card">
+  <h2>Water Tracker</h2>
+  <p id="water">0 ml</p>
+  <button onclick="addWater()">+250 ml</button>
+</div>
+
+<div class="card">
+  <h2>Workout</h2>
+  <p id="workoutStatus">Not Completed</p>
+  <button onclick="completeWorkout()">Mark Complete</button>
+</div>
+
+<script>
+  let water = 0;
+  function addWater() {
+    water += 250;
+    document.getElementById("water").innerText = water + " ml";
+    localStorage.setItem("water", water);
+  }
+
+  function completeWorkout() {
+    document.getElementById("workoutStatus").innerText = "Completed ✅";
+    localStorage.setItem("workout", "completed");
+  }
+
+  window.onload = function() {
+    const savedWater = localStorage.getItem("water");
+    const savedWorkout = localStorage.getItem("workout");
+
+    if (savedWater) {
+      water = parseInt(savedWater);
+      document.getElementById("water").innerText = water + " ml";
+    }
+
+    if (savedWorkout === "completed") {
+      document.getElementById("workoutStatus").innerText = "Completed ✅";
+    }
+  }
+</script>
+
+</body>
+</html>

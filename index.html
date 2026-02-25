@@ -1,85 +1,180 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>myFit</title>
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      margin: 0;
-      padding: 20px;
-      background: #111;
-      color: white;
-    }
-    h1 { margin-top: 0; }
-    button {
-      padding: 12px;
-      margin-top: 10px;
-      width: 100%;
-      border: none;
-      border-radius: 10px;
-      font-size: 16px;
-      background: #00c896;
-      color: white;
-    }
-    input {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      border-radius: 8px;
-      border: none;
-    }
-    .card {
-      background: #1c1c1e;
-      padding: 15px;
-      border-radius: 12px;
-      margin-top: 15px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>myFit</title>
+<style>
+body {
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  margin: 0;
+  padding: 20px;
+  background: #0f0f0f;
+  color: white;
+}
+h1,h2 { margin: 5px 0; }
+.card {
+  background: #1c1c1e;
+  padding: 15px;
+  border-radius: 12px;
+  margin-top: 15px;
+}
+button {
+  padding: 12px;
+  margin-top: 10px;
+  width: 100%;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  background: #00c896;
+  color: white;
+}
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: none;
+}
+.small-btn {
+  width: auto;
+  padding: 6px 10px;
+  font-size: 14px;
+}
+</style>
 </head>
 <body>
 
 <h1>myFit</h1>
 
-<div class="card">
-  <h2>Water Tracker</h2>
-  <p id="water">0 ml</p>
-  <button onclick="addWater()">+250 ml</button>
+<div id="assessment" class="card">
+  <h2>Initial Assessment</h2>
+  <input id="weight" type="number" placeholder="Weight (kg)">
+  <select id="goal">
+    <option value="fat">Lose Fat</option>
+    <option value="muscle">Build Muscle</option>
+    <option value="hybrid">Hybrid</option>
+  </select>
+  <button onclick="startPlan()">Generate Plan</button>
 </div>
 
-<div class="card">
-  <h2>Workout</h2>
-  <p id="workoutStatus">Not Completed</p>
-  <button onclick="completeWorkout()">Mark Complete</button>
+<div id="dashboard" style="display:none">
+
+  <div class="card">
+    <h2>Today's Workout</h2>
+    <p id="todayWorkout"></p>
+    <button onclick="completeWorkout()">Mark Complete</button>
+  </div>
+
+  <div class="card">
+    <h2>Water Tracker</h2>
+    <p id="waterDisplay"></p>
+    <button onclick="addWater()">+250 ml</button>
+  </div>
+
+  <div class="card">
+    <h2>Coach Chat</h2>
+    <input id="chatInput" placeholder="Type: skip, tired, swap run">
+    <button onclick="processChat()">Update Plan</button>
+    <p id="chatResponse"></p>
+  </div>
+
 </div>
 
 <script>
-  let water = 0;
-  function addWater() {
-    water += 250;
-    document.getElementById("water").innerText = water + " ml";
-    localStorage.setItem("water", water);
+
+let state = {
+  weight: null,
+  goal: null,
+  water: 0,
+  workoutCompleted: false,
+  weeklyPlan: [],
+  todayIndex: new Date().getDay()
+};
+
+function startPlan() {
+  state.weight = parseFloat(document.getElementById("weight").value);
+  state.goal = document.getElementById("goal").value;
+
+  if (!state.weight) return alert("Enter weight");
+
+  generatePlan();
+  document.getElementById("assessment").style.display = "none";
+  document.getElementById("dashboard").style.display = "block";
+  updateUI();
+  save();
+}
+
+function generatePlan() {
+  if (state.goal === "fat") {
+    state.weeklyPlan = ["Strength + Walk","Intervals","Upper Body","Rest","Lower Body","Cardio","Rest"];
+  }
+  if (state.goal === "muscle") {
+    state.weeklyPlan = ["Chest","Back","Legs","Rest","Shoulders","Arms","Rest"];
+  }
+  if (state.goal === "hybrid") {
+    state.weeklyPlan = ["Upper","Run","Lower","Rest","Full Body","Long Cardio","Rest"];
+  }
+}
+
+function updateUI() {
+  document.getElementById("todayWorkout").innerText = state.weeklyPlan[state.todayIndex];
+  document.getElementById("waterDisplay").innerText = state.water + " ml / " + Math.round(state.weight*35) + " ml target";
+}
+
+function addWater() {
+  state.water += 250;
+  updateUI();
+  save();
+}
+
+function completeWorkout() {
+  state.workoutCompleted = true;
+  document.getElementById("todayWorkout").innerText += " ✅";
+  save();
+}
+
+function processChat() {
+  let input = document.getElementById("chatInput").value.toLowerCase();
+  let response = "";
+
+  if (input.includes("skip")) {
+    state.weeklyPlan[state.todayIndex] = "Light Walk or Mobility";
+    response = "Workout reduced to recovery session.";
+  }
+  else if (input.includes("tired")) {
+    state.weeklyPlan[state.todayIndex] = "Low Intensity Cardio";
+    response = "Intensity lowered.";
+  }
+  else if (input.includes("swap")) {
+    state.weeklyPlan[state.todayIndex] = "Alternative Cardio Session";
+    response = "Workout swapped.";
+  }
+  else {
+    response = "No adjustment made.";
   }
 
-  function completeWorkout() {
-    document.getElementById("workoutStatus").innerText = "Completed ✅";
-    localStorage.setItem("workout", "completed");
+  document.getElementById("chatResponse").innerText = response;
+  updateUI();
+  save();
+}
+
+function save() {
+  localStorage.setItem("myfitState", JSON.stringify(state));
+}
+
+function load() {
+  let saved = localStorage.getItem("myfitState");
+  if (saved) {
+    state = JSON.parse(saved);
+    document.getElementById("assessment").style.display = "none";
+    document.getElementById("dashboard").style.display = "block";
+    updateUI();
   }
+}
 
-  window.onload = function() {
-    const savedWater = localStorage.getItem("water");
-    const savedWorkout = localStorage.getItem("workout");
+load();
 
-    if (savedWater) {
-      water = parseInt(savedWater);
-      document.getElementById("water").innerText = water + " ml";
-    }
-
-    if (savedWorkout === "completed") {
-      document.getElementById("workoutStatus").innerText = "Completed ✅";
-    }
-  }
 </script>
 
 </body>

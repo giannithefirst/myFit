@@ -16,8 +16,9 @@
     --line:#242428;
     --chip:#0f0f12;
     --water:#3aa0ff;
+    --warn:#ffcc00;
   }
-
+  *{ box-sizing:border-box; }
   body{
     margin:0;
     background:var(--bg);
@@ -26,9 +27,9 @@
     padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom) 0;
   }
   .wrap{
-    max-width: 430px; /* iPhone 14 Pro-ish */
+    max-width: 430px;
     margin: 0 auto;
-    padding: 14px 14px 90px 14px; /* bottom nav space */
+    padding: 14px 14px 90px 14px;
   }
 
   /* Header */
@@ -46,6 +47,16 @@
     border:1px solid var(--line);
     object-fit:cover;
   }
+  .titleCenter{
+    position:absolute;
+    left:0; right:0;
+    text-align:center;
+    pointer-events:none;
+    font-weight:1000;
+    font-size:16px;
+    margin-top:2px;
+    color:rgba(255,255,255,0.92);
+  }
   .iconbtn{
     width:40px; height:40px;
     border-radius:12px;
@@ -55,6 +66,8 @@
     font-size:16px;
     display:flex; align-items:center; justify-content:center;
   }
+  .topbarLeft, .topbarRight{ display:flex; align-items:center; gap:8px; z-index:1; }
+  .topbarWrap{ position:relative; }
 
   /* Units toggle */
   .seg{
@@ -63,12 +76,11 @@
   }
   .seg button{
     border:none; padding:8px 10px; color:var(--muted);
-    background:transparent; font-size:13px; font-weight:900;
+    background:transparent; font-size:12px; font-weight:900;
   }
   .seg button.active{ color:#0b0b0c; background:var(--accent); }
 
   .grid{ display:grid; gap:12px; }
-
   .card{
     background:var(--card);
     border:1px solid var(--line);
@@ -80,7 +92,7 @@
   .divider{ height:1px; background:var(--line); margin:12px 0; }
 
   input, select, textarea{
-    width:100%; box-sizing:border-box;
+    width:100%;
     background:var(--chip); color:var(--text);
     border:1px solid var(--line);
     border-radius:12px;
@@ -105,20 +117,18 @@
   .btn.secondary{ background:#2b2b2f; color:var(--text); font-weight:900; }
   .btn.danger{ background:var(--danger); color:#0b0b0c; font-weight:1000; }
   .btn.small{ padding:10px 12px; font-size:14px; border-radius:10px; }
+  .btn.ghost{ background:transparent; border:1px solid var(--line); color:var(--text); }
+  .btn.warn{ background:var(--warn); color:#0b0b0c; font-weight:1000; }
 
-  /* Hero plan card */
+  /* Hero */
   .hero{
     background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
     border:1px solid var(--line);
     border-radius:18px;
     padding:16px;
   }
-  .heroTop{
-    display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
-  }
-  .heroTitle{
-    font-size:18px; font-weight:1000; margin:0;
-  }
+  .heroTop{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+  .heroTitle{ font-size:18px; font-weight:1000; margin:0; }
   .heroMeta{ color:var(--muted); font-size:13px; font-weight:800; margin-top:6px; }
   .progress{
     width:100%; height:10px; border-radius:999px;
@@ -126,14 +136,11 @@
     margin-top:12px;
   }
   .progress > div{ height:100%; background:var(--accent); width:0%; }
-  .heroStats{
-    display:flex; justify-content:space-between; gap:12px;
-    margin-top:12px;
-  }
+  .heroStats{ display:flex; justify-content:space-between; gap:12px; margin-top:12px; }
   .stat .label{ color:var(--muted); font-size:12px; font-weight:900; }
   .stat .value{ font-size:18px; font-weight:1000; margin-top:2px; }
 
-  /* Week strip (tap days) */
+  /* Week strip */
   .weekStrip{
     display:grid;
     grid-template-columns:repeat(7,1fr);
@@ -154,26 +161,58 @@
     box-shadow:0 0 0 2px rgba(0,200,150,0.15) inset;
   }
 
-  /* Day navigator */
-  .daynav{
-    display:flex; align-items:center; justify-content:space-between; gap:10px;
+  /* Action icon row */
+  .actions{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    margin-top:12px;
   }
-  .navbtn{
-    border:1px solid var(--line);
+  .actionBtn{
     background:var(--chip);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:12px 8px;
+    text-align:center;
     color:var(--text);
-    border-radius:12px;
-    width:44px; height:40px;
-    font-size:18px; font-weight:1000;
   }
-  .datechip{
-    flex:1;
-    display:flex; align-items:center; justify-content:center; gap:8px;
-    background:var(--chip); border:1px solid var(--line);
-    border-radius:12px; height:40px;
+  .actionIcon{
+    width:40px; height:40px;
+    border-radius:14px;
+    margin:0 auto 8px auto;
+    background:rgba(255,255,255,0.06);
+    border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    font-size:18px;
+  }
+  .actionLabel{
+    font-size:11px;
+    color:var(--muted);
     font-weight:1000;
+    line-height:1.1;
   }
-  .datechip small{ color:var(--muted); font-weight:900; }
+
+  /* Collapsible */
+  details{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:0;
+    overflow:hidden;
+  }
+  summary{
+    list-style:none;
+    cursor:pointer;
+    padding:14px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+  }
+  summary::-webkit-details-marker{ display:none; }
+  .sumTitle{ font-weight:1000; }
+  .sumRight{ color:var(--muted); font-weight:900; font-size:13px; }
+  .detailBody{ padding:0 14px 14px 14px; }
 
   /* Water glasses */
   .glasses{ display:flex; gap:10px; flex-wrap:wrap; }
@@ -205,7 +244,7 @@
   /* Workout list */
   .witem{
     display:flex; gap:10px; align-items:flex-start;
-    padding:10px 0; border-bottom:1px solid var(--line);
+    padding:12px 0; border-bottom:1px solid var(--line);
   }
   .witem:last-child{ border-bottom:none; }
   .wcheck{
@@ -217,16 +256,46 @@
   }
   .wcheck.done{ background:var(--accent); border-color:transparent; }
   .wname{ font-weight:1000; }
-  .wmeta{ color:var(--muted); font-size:13px; margin-top:2px; font-weight:800; }
+  .wmeta{ color:var(--muted); font-size:12px; margin-top:3px; font-weight:900; display:flex; gap:8px; flex-wrap:wrap; }
+  .chip{
+    background:rgba(255,255,255,0.06);
+    border:1px solid var(--line);
+    color:rgba(255,255,255,0.9);
+    border-radius:999px;
+    padding:4px 8px;
+    font-size:11px;
+    font-weight:1000;
+  }
+  .rightBtns{ margin-left:auto; display:flex; gap:8px; }
+  .miniBtn{
+    border:1px solid var(--line);
+    background:var(--chip);
+    color:var(--text);
+    border-radius:12px;
+    padding:8px 10px;
+    font-weight:1000;
+    font-size:12px;
+    white-space:nowrap;
+  }
+  .miniBtn.primary{
+    background:rgba(0,200,150,0.18);
+    border-color:rgba(0,200,150,0.35);
+  }
+  .nextHint{
+    color:rgba(0,200,150,0.9);
+    font-size:12px;
+    font-weight:1000;
+    margin-top:6px;
+  }
 
-  /* Week calendar grid (Plan tab) */
-  .week{
+  /* Plan grid */
+  .weekGrid{
     display:grid; grid-template-columns:repeat(7,1fr);
     gap:8px;
   }
   .dayBox{
     background:var(--chip); border:1px solid var(--line);
-    border-radius:12px; padding:10px; min-height:74px;
+    border-radius:12px; padding:10px; min-height:78px;
     display:flex; flex-direction:column; gap:6px;
   }
   .dayBox .dow{ color:var(--muted); font-size:12px; font-weight:900; }
@@ -265,6 +334,73 @@
     border-color:transparent;
   }
 
+  /* Modal */
+  .modalBackdrop{
+    position:fixed; inset:0;
+    background:rgba(0,0,0,0.55);
+    display:none;
+    align-items:flex-end;
+    justify-content:center;
+    padding:14px;
+    z-index:1000;
+  }
+  .modalBackdrop.show{ display:flex; }
+  .sheet{
+    width:100%;
+    max-width:430px;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:18px;
+    overflow:hidden;
+  }
+  .sheetHeader{
+    padding:12px 14px;
+    display:flex; align-items:center; justify-content:space-between;
+    border-bottom:1px solid var(--line);
+  }
+  .sheetTitle{ font-weight:1000; }
+  .sheetBody{ padding:14px; max-height:72vh; overflow:auto; }
+  .sheetFooter{
+    padding:12px 14px;
+    border-top:1px solid var(--line);
+    display:flex; gap:10px;
+  }
+  .sheetFooter .btn{ flex:1; }
+
+  .seg2{
+    display:flex;
+    border:1px solid var(--line);
+    background:var(--chip);
+    border-radius:14px;
+    overflow:hidden;
+  }
+  .seg2 button{
+    flex:1;
+    border:none;
+    padding:10px 10px;
+    background:transparent;
+    color:var(--muted);
+    font-weight:1000;
+  }
+  .seg2 button.active{
+    background:rgba(0,200,150,0.16);
+    color:var(--text);
+  }
+
+  .list{
+    display:grid; gap:10px;
+  }
+  .listItem{
+    background:var(--chip);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:12px;
+  }
+  .listItemTop{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+  .listItemName{ font-weight:1000; }
+  .listItemMeta{ margin-top:6px; display:flex; gap:8px; flex-wrap:wrap; }
+  .tiny{ font-size:12px; color:var(--muted); font-weight:900; }
+
   .hidden{ display:none !important; }
 </style>
 </head>
@@ -272,16 +408,25 @@
 <body>
 <div class="wrap">
 
-  <!-- Header -->
-  <div class="topbar">
-    <div class="brand">
-      <img src="./logo.jpg" class="logo" alt="myFit logo" onerror="this.style.display='none'">
-      <span>myFit</span>
-    </div>
-    <div class="row" style="gap:8px; flex:0 0 auto;">
-      <div class="seg" aria-label="Units toggle">
-        <button id="uImp" class="active" onclick="setUnits('imperial')">Imperial</button>
-        <button id="uMet" onclick="setUnits('metric')">Metric</button>
+  <!-- Header (Today-style header always; title changes per tab) -->
+  <div class="topbarWrap">
+    <div class="topbar">
+      <div class="topbarLeft">
+        <button class="iconbtn" onclick="openProfileHint()" title="Profile">👤</button>
+        <div class="brand">
+          <img src="./logo.png" class="logo" alt="myFit logo" onerror="this.style.display='none'">
+          <span class="hidden" id="brandText">myFit</span>
+        </div>
+      </div>
+
+      <div class="titleCenter" id="topTitle">Today</div>
+
+      <div class="topbarRight">
+        <div class="seg" aria-label="Units toggle">
+          <button id="uImp" class="active" onclick="setUnits('imperial')">Imp</button>
+          <button id="uMet" onclick="setUnits('metric')">Met</button>
+        </div>
+        <button class="iconbtn" onclick="openQuickHelp()" title="Help">❓</button>
       </div>
     </div>
   </div>
@@ -289,7 +434,7 @@
   <!-- ONBOARDING -->
   <div id="onboarding" class="card" style="margin-top:12px;">
     <h2>Initial Questionnaire ✍️</h2>
-    <div class="sub">Answer once. You can edit goal later.</div>
+    <div class="sub">Build your plan once. You can change it later.</div>
     <div class="divider"></div>
 
     <div id="step1">
@@ -297,7 +442,7 @@
         <select id="goalType">
           <option value="fat">Lose Fat</option>
           <option value="muscle">Build Muscle</option>
-          <option value="hybrid" selected>Hybrid / Recomp</option>
+          <option value="hybrid" selected>Hybrid / Functional</option>
           <option value="endurance">Endurance Focus</option>
         </select>
         <select id="exp">
@@ -307,16 +452,21 @@
         </select>
       </div>
       <div class="row" style="margin-top:10px;">
-        <input id="age" type="number" placeholder="Age (optional)">
         <input id="height" type="number" placeholder="Height (inches or cm)">
+        <input id="weight" type="number" placeholder="Weight (lbs or kg)">
       </div>
       <div class="row" style="margin-top:10px;">
-        <input id="weight" type="number" placeholder="Weight (lbs or kg)">
         <select id="daysPerWeek">
           <option value="3">3 days / week</option>
           <option value="4" selected>4 days / week</option>
           <option value="5">5 days / week</option>
           <option value="6">6 days / week</option>
+        </select>
+        <select id="timePerSession">
+          <option value="25">~25 min</option>
+          <option value="40" selected>~40 min</option>
+          <option value="55">~55 min</option>
+          <option value="70">~70 min</option>
         </select>
       </div>
       <button class="btn" onclick="nextStep(2)">Next ➜</button>
@@ -324,19 +474,6 @@
 
     <div id="step2" class="hidden">
       <div class="row">
-        <select id="equipment">
-          <option value="gym" selected>Gym</option>
-          <option value="home_db">Home (dumbbells)</option>
-          <option value="bw">Bodyweight only</option>
-        </select>
-        <select id="timePerSession">
-          <option value="20">~20 min</option>
-          <option value="35" selected>~35 min</option>
-          <option value="50">~50 min</option>
-          <option value="65">~65 min</option>
-        </select>
-      </div>
-      <div class="row" style="margin-top:10px;">
         <select id="mobility">
           <option value="low">Mobility: low</option>
           <option value="mid" selected>Mobility: moderate</option>
@@ -361,20 +498,12 @@
           <option value="active">Lifestyle: active</option>
         </select>
       </div>
-      <button class="btn" onclick="nextStep(3)">Next ➜</button>
-      <button class="btn secondary" onclick="nextStep(1)">⬅ Back</button>
-    </div>
-
-    <div id="step3" class="hidden">
-      <input id="limitations" placeholder="Injuries/limits (e.g., knee, back) — optional" />
-      <div class="row" style="margin-top:10px;">
-        <input id="goalWeight" type="number" placeholder="Goal weight (optional)">
-        <input id="timelineWeeks" type="number" placeholder="Timeline weeks (optional)">
-      </div>
-      <button class="btn" onclick="finishOnboarding()">Generate myFit Plan 🚀</button>
-      <button class="btn secondary" onclick="nextStep(2)">⬅ Back</button>
+      <input id="limitations" style="margin-top:10px;" placeholder="Injuries/limits (knee/back/etc) — optional" />
       <div class="divider"></div>
-      <div class="sub">⚠️ Private browsing resets storage. Use Export/Import in Settings.</div>
+      <button class="btn" onclick="finishOnboarding()">Generate myFit Plan 🚀</button>
+      <button class="btn secondary" onclick="nextStep(1)" style="margin-top:8px;">⬅ Back</button>
+      <div class="divider"></div>
+      <div class="sub">Private browsing wipes local storage. We’ll add cloud later.</div>
     </div>
   </div>
 
@@ -389,74 +518,86 @@
         </div>
         <button class="iconbtn" onclick="showTab('settings')" title="Settings">⚙️</button>
       </div>
+
       <div class="progress"><div id="heroBar"></div></div>
+
       <div class="heroStats">
         <div class="stat">
-          <div class="label">Week adherence</div>
-          <div class="value" id="heroAdh">0%</div>
+          <div class="label">Progress complete</div>
+          <div class="value" id="heroDone">0/0</div>
         </div>
         <div class="stat" style="text-align:right">
-          <div class="label">Workouts done</div>
-          <div class="value" id="heroDone">0/0</div>
+          <div class="label">Adherence</div>
+          <div class="value" id="heroAdh">0%</div>
         </div>
       </div>
 
       <div class="weekStrip" id="weekStrip"></div>
+
+      <div class="actions">
+        <button class="actionBtn" onclick="openPlanOverview()">
+          <div class="actionIcon">📋</div>
+          <div class="actionLabel">Plan<br>Overview</div>
+        </button>
+        <button class="actionBtn" onclick="openAudible()">
+          <div class="actionIcon">🔁</div>
+          <div class="actionLabel">Rearrange</div>
+        </button>
+        <button class="actionBtn" onclick="connectedAppsHint()">
+          <div class="actionIcon">🔗</div>
+          <div class="actionLabel">Connected<br>Apps</div>
+        </button>
+        <button class="actionBtn" onclick="showTab('goal')">
+          <div class="actionIcon">🎯</div>
+          <div class="actionLabel">Manage<br>Plan</div>
+        </button>
+      </div>
     </div>
 
     <div class="card">
-      <div class="daynav">
-        <button class="navbtn" onclick="shiftSelected(-1)">⬅️</button>
-        <div class="datechip" id="selDateChip">—</div>
-        <button class="navbtn" onclick="shiftSelected(1)">➡️</button>
+      <div class="row" style="gap:10px;">
+        <button class="btn secondary" onclick="shiftSelected(-1)">⬅ Prev</button>
+        <button class="btn secondary" onclick="jumpToToday()">Today 📍</button>
+        <button class="btn secondary" onclick="shiftSelected(1)">Next ➡</button>
       </div>
-      <div class="sub" id="selDayHint" style="margin-top:10px;">—</div>
       <div class="divider"></div>
-      <div class="row">
-        <button class="btn secondary" onclick="analyzeDay()">Analyze 🧠</button>
-        <button class="btn" onclick="jumpToToday()">Today 📍</button>
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+        <div style="font-weight:1000;" id="selDateChip">—</div>
+        <button class="miniBtn primary" onclick="analyzeDay()">Analyze 🧠</button>
       </div>
       <div class="sub" id="analysisOut" style="margin-top:10px;">—</div>
     </div>
 
-    <div class="card">
-      <h2>Water Intake 💧</h2>
-      <div class="sub" id="waterTargetText">—</div>
-      <div class="divider"></div>
-      <div class="glasses" id="glasses"></div>
-      <div class="divider"></div>
-      <button class="btn secondary" onclick="resetWaterSelected()">Reset this day</button>
-    </div>
+    <details open id="waterDetails">
+      <summary>
+        <div class="sumTitle">Water Intake 💧</div>
+        <div class="sumRight" id="waterSummary">—</div>
+      </summary>
+      <div class="detailBody">
+        <div class="sub" id="waterTargetText">—</div>
+        <div class="divider"></div>
+        <div class="glasses" id="glasses"></div>
+        <div class="divider"></div>
+        <button class="btn secondary" onclick="resetWaterSelected()">Reset this day</button>
+      </div>
+    </details>
 
-    <div class="card">
-      <h2>Daily Workout 🏋️</h2>
-      <div class="sub" id="dayTitle">—</div>
-      <div class="divider"></div>
-      <div id="workoutList"></div>
-      <div class="divider"></div>
-      <div class="row">
-        <button class="btn secondary" onclick="makeSelectedRest()">Make Rest</button>
-        <button class="btn" onclick="completeSelectedWorkout()">Complete Day ✅</button>
+    <details open id="workoutDetails">
+      <summary>
+        <div class="sumTitle">Today’s Workout 🏋️</div>
+        <div class="sumRight" id="workoutSummary">—</div>
+      </summary>
+      <div class="detailBody">
+        <div class="sub" id="dayTitle">—</div>
+        <div class="divider"></div>
+        <div id="workoutList"></div>
+        <div class="divider"></div>
+        <div class="row">
+          <button class="btn secondary" onclick="openAudible()">Make an Audible 🎧</button>
+          <button class="btn" onclick="completeSelectedWorkout()">Complete ✅</button>
+        </div>
       </div>
-    </div>
-
-    <div class="card">
-      <h2>Make an Audible 🎧</h2>
-      <div class="sub">
-        Safe mode: if you type a note (e.g., “I’m shoveling today”), I will NOT erase your plan.
-        To log a workout, use “I did:” plus a list.
-      </div>
-      <div class="divider"></div>
-      <textarea id="audibleIn" placeholder="Examples:
-I did: squat 3x8, RDL 3x10, leg press 3x12
-Swap split squats for leg press
-I’m shoveling today"></textarea>
-      <div class="row" style="margin-top:10px;">
-        <button class="btn secondary" onclick="applyAudible(false)">Update this day</button>
-        <button class="btn" onclick="applyAudible(true)">Update + adjust week</button>
-      </div>
-      <div class="sub" id="audibleOut" style="margin-top:10px;">—</div>
-    </div>
+    </details>
 
   </div>
 
@@ -466,9 +607,8 @@ I’m shoveling today"></textarea>
       <h2>Weekly Plan 📅</h2>
       <div class="sub">Tap a day to jump to it.</div>
       <div class="divider"></div>
-      <div class="week" id="weekGrid"></div>
+      <div class="weekGrid" id="weekGrid"></div>
     </div>
-
     <div class="card">
       <h2>Weekly Summary 📈</h2>
       <div class="sub" id="weeklySummary">—</div>
@@ -478,7 +618,7 @@ I’m shoveling today"></textarea>
   <!-- GOAL -->
   <div id="view-goal" class="grid hidden" style="margin-top:12px;">
     <div class="card">
-      <h2>Goal Tracker 🎯</h2>
+      <h2>Goal / Progress 🎯</h2>
       <div class="sub" id="goalText">—</div>
       <div class="divider"></div>
       <button class="btn secondary" onclick="openGoalChange()">Change goal ✍️</button>
@@ -486,12 +626,12 @@ I’m shoveling today"></textarea>
 
     <div id="goalChange" class="card hidden">
       <h2>Change Goal ✍️</h2>
-      <div class="sub">This rebuilds the week (keeps your logs).</div>
+      <div class="sub">Rebuilds the week (keeps your logs).</div>
       <div class="divider"></div>
       <select id="newGoalType">
         <option value="fat">Lose Fat</option>
         <option value="muscle">Build Muscle</option>
-        <option value="hybrid">Hybrid / Recomp</option>
+        <option value="hybrid">Hybrid / Functional</option>
         <option value="endurance">Endurance Focus</option>
       </select>
       <div class="row" style="margin-top:10px;">
@@ -502,15 +642,15 @@ I’m shoveling today"></textarea>
           <option value="6">6 days / week</option>
         </select>
         <select id="newTime">
-          <option value="20">~20 min</option>
-          <option value="35" selected>~35 min</option>
-          <option value="50">~50 min</option>
-          <option value="65">~65 min</option>
+          <option value="25">~25 min</option>
+          <option value="40" selected>~40 min</option>
+          <option value="55">~55 min</option>
+          <option value="70">~70 min</option>
         </select>
       </div>
       <div class="divider"></div>
       <button class="btn" onclick="applyGoalChange()">Apply ✅</button>
-      <button class="btn secondary" onclick="closeGoalChange()">Cancel</button>
+      <button class="btn secondary" onclick="closeGoalChange()" style="margin-top:8px;">Cancel</button>
     </div>
   </div>
 
@@ -529,7 +669,7 @@ I’m shoveling today"></textarea>
 
     <div class="card">
       <h2>Export / Import 🧳</h2>
-      <div class="sub">Use if you browse private (storage resets).</div>
+      <div class="sub">Use if private browsing wipes your data.</div>
       <div class="divider"></div>
       <button class="btn secondary" onclick="exportState()">Export myFit data</button>
       <textarea id="exportBox" class="hidden" readonly></textarea>
@@ -548,39 +688,286 @@ I’m shoveling today"></textarea>
   <div class="bar">
     <button class="navItem active" id="nav-today" onclick="showTab('today')">Today</button>
     <button class="navItem" id="nav-plan" onclick="showTab('plan')">Plan</button>
-    <button class="navItem" id="nav-goal" onclick="showTab('goal')">Goal</button>
+    <button class="navItem" id="nav-goal" onclick="showTab('goal')">Progress</button>
     <button class="navItem" id="nav-settings" onclick="showTab('settings')">Settings</button>
   </div>
 </div>
 
-<script>
-/* ------------------------- State ------------------------- */
-const DOW = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+<!-- Audible Modal -->
+<div class="modalBackdrop" id="audibleModal" onclick="closeModalOnBackdrop(event,'audibleModal')">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="sheetHeader">
+      <div class="sheetTitle">Make an Audible 🎧</div>
+      <button class="iconbtn" onclick="closeAudible()">✕</button>
+    </div>
+    <div class="sheetBody">
+      <div class="seg2" style="margin-bottom:12px;">
+        <button id="audMode0" class="active" onclick="setAudMode(0)">Swap</button>
+        <button id="audMode1" onclick="setAudMode(1)">Rest</button>
+        <button id="audMode2" onclick="setAudMode(2)">Replace</button>
+      </div>
 
+      <!-- Swap -->
+      <div id="audSwap">
+        <div class="sub">Pick an exercise to replace. You’ll see replacements ranked by <b>primary muscle + movement pattern</b>.</div>
+        <div class="divider"></div>
+
+        <div class="tiny">1) Replace which exercise?</div>
+        <select id="swapFrom" onchange="renderSwapCandidates()" style="margin-top:8px;"></select>
+
+        <div class="divider"></div>
+
+        <div class="row" style="align-items:flex-start;">
+          <div>
+            <div class="tiny">Target</div>
+            <div id="swapFromMeta" class="wmeta" style="margin-top:6px;"></div>
+          </div>
+          <div style="text-align:right;">
+            <div class="tiny">Accessory alternatives</div>
+            <button class="miniBtn" id="accToggle" onclick="toggleAccessory()">Off</button>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="tiny">2) Choose replacement</div>
+        <div class="list" id="swapCandidates" style="margin-top:8px;"></div>
+      </div>
+
+      <!-- Rest -->
+      <div id="audRest" class="hidden">
+        <div class="sub">Convert this day to rest. Optionally rebalance the week so workout count stays consistent.</div>
+        <div class="divider"></div>
+        <button class="btn secondary" onclick="setDayRest()">Make this day Rest 😌</button>
+        <div class="divider"></div>
+        <button class="btn" onclick="setDayRest(true)">Make Rest + Rebalance week ✅</button>
+      </div>
+
+      <!-- Replace -->
+      <div id="audReplace" class="hidden">
+        <div class="sub">Replace today’s workout with a new focus built from your exercise library.</div>
+        <div class="divider"></div>
+        <div class="row">
+          <button class="btn secondary" onclick="replaceDayFocus('upper')">Upper</button>
+          <button class="btn secondary" onclick="replaceDayFocus('lower')">Lower</button>
+        </div>
+        <div class="row" style="margin-top:10px;">
+          <button class="btn secondary" onclick="replaceDayFocus('full')">Full</button>
+          <button class="btn secondary" onclick="replaceDayFocus('cardio')">Cardio</button>
+        </div>
+        <button class="btn secondary" style="margin-top:10px;" onclick="replaceDayFocus('mobility')">Mobility</button>
+        <div class="divider"></div>
+        <button class="btn" onclick="replaceDayFocus(state.profile.goalType, true)">Replace + Rebalance week ✅</button>
+      </div>
+
+      <div class="divider"></div>
+      <div class="sub" id="audibleOut">—</div>
+    </div>
+    <div class="sheetFooter">
+      <button class="btn secondary" onclick="closeAudible()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Set Logger Modal -->
+<div class="modalBackdrop" id="setModal" onclick="closeModalOnBackdrop(event,'setModal')">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="sheetHeader">
+      <div class="sheetTitle" id="setTitle">Log Sets</div>
+      <button class="iconbtn" onclick="closeSetModal()">✕</button>
+    </div>
+    <div class="sheetBody">
+      <div class="sub" id="setMeta">—</div>
+      <div class="divider"></div>
+      <div id="setRows"></div>
+      <div class="divider"></div>
+      <div class="row">
+        <button class="btn secondary" onclick="addSetRow()">+ Add set</button>
+        <button class="btn secondary" onclick="removeSetRow()">– Remove</button>
+      </div>
+      <div class="divider"></div>
+      <div class="sub" id="setRec">—</div>
+    </div>
+    <div class="sheetFooter">
+      <button class="btn secondary" onclick="closeSetModal()">Cancel</button>
+      <button class="btn" onclick="saveSetLog()">Save ✅</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ------------------------- Constants ------------------------- */
+const DOW = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const MUSCLE_LABEL = {
+  quads:"Quads", glutes:"Glutes", hamstrings:"Hamstrings", calves:"Calves",
+  chest:"Chest", back:"Back", shoulders:"Shoulders",
+  biceps:"Biceps", triceps:"Triceps", core:"Core",
+  cardio:"Cardio", mobility:"Mobility"
+};
+const PATTERN_LABEL = { squat:"Squat", hinge:"Hinge", push:"Push", pull:"Pull", carry:"Carry", core:"Core", cardio:"Cardio", mobility:"Mobility" };
+
+/* ------------------------- Exercise Library (~110) ------------------------- */
+/* Each exercise: id, name, primaryMuscle, secondaryMuscles[], movementPattern, equipment[], category(compound|accessory|core|cardio|mobility) */
+const EX = [
+  // QUADS
+  ex("back_squat","Back Squat","quads",["glutes"],"squat",["barbell","rack"],"compound"),
+  ex("front_squat","Front Squat","quads",["core","glutes"],"squat",["barbell","rack"],"compound"),
+  ex("goblet_squat","Goblet Squat","quads",["glutes"],"squat",["dumbbell"],"compound"),
+  ex("smith_squat","Smith Machine Squat","quads",["glutes"],"squat",["machine"],"compound"),
+  ex("hack_squat","Hack Squat (Machine)","quads",["glutes"],"squat",["machine"],"compound"),
+  ex("leg_press_plate","Leg Press (Plate Loaded)","quads",["glutes"],"squat",["machine"],"compound"),
+  ex("leg_press_select","Leg Press (Selectorized)","quads",["glutes"],"squat",["machine"],"compound"),
+  ex("bulgarian_split","Bulgarian Split Squat","quads",["glutes"],"squat",["dumbbell","bench"],"compound"),
+  ex("walking_lunge","Walking Lunge","quads",["glutes"],"squat",["dumbbell"],"compound"),
+  ex("reverse_lunge","Reverse Lunge","quads",["glutes"],"squat",["dumbbell"],"compound"),
+  ex("step_ups","Step-Ups","quads",["glutes"],"squat",["dumbbell","box"],"compound"),
+  ex("leg_extension","Leg Extension","quads",[],"squat",["machine"],"accessory"),
+  ex("reverse_nordic","Reverse Nordic","quads",[],"squat",["bodyweight"],"accessory"),
+  ex("spanish_squat","Spanish Squat (Band)","quads",[],"squat",["band"],"accessory"),
+
+  // HAMSTRINGS / GLUTES
+  ex("rdl_bar","Romanian Deadlift (Barbell)","hamstrings",["glutes","back"],"hinge",["barbell"],"compound"),
+  ex("rdl_db","Romanian Deadlift (DB)","hamstrings",["glutes"],"hinge",["dumbbell"],"compound"),
+  ex("deadlift_conv","Deadlift (Conventional)","glutes",["hamstrings","back"],"hinge",["barbell"],"compound"),
+  ex("deadlift_trap","Deadlift (Trap Bar)","glutes",["quads","hamstrings"],"hinge",["trapbar"],"compound"),
+  ex("hip_thrust_bb","Hip Thrust (Barbell)","glutes",["hamstrings"],"hinge",["barbell","bench"],"compound"),
+  ex("hip_thrust_machine","Hip Thrust (Machine)","glutes",["hamstrings"],"hinge",["machine"],"compound"),
+  ex("glute_bridge","Glute Bridge","glutes",["hamstrings"],"hinge",["barbell","bodyweight"],"accessory"),
+  ex("cable_pullthrough","Cable Pull-Through","glutes",["hamstrings"],"hinge",["cable"],"accessory"),
+  ex("ham_curl_lying","Leg Curl (Lying)","hamstrings",[],"hinge",["machine"],"accessory"),
+  ex("ham_curl_seated","Leg Curl (Seated)","hamstrings",[],"hinge",["machine"],"accessory"),
+  ex("nordic_curl","Nordic Curl","hamstrings",[],"hinge",["bodyweight"],"accessory"),
+  ex("back_ext_glute","Back Extension (Glute Bias)","glutes",["hamstrings"],"hinge",["bench"],"accessory"),
+  ex("sl_rdl","Single-Leg RDL","hamstrings",["glutes"],"hinge",["dumbbell"],"accessory"),
+  ex("cable_kickback","Glute Kickback (Cable)","glutes",[],"hinge",["cable"],"accessory"),
+  ex("reverse_hyper","Reverse Hyper","glutes",["hamstrings"],"hinge",["machine"],"accessory"),
+  ex("good_morning","Good Morning (Light)","hamstrings",["glutes","back"],"hinge",["barbell"],"accessory"),
+
+  // CALVES
+  ex("calf_raise_stand","Calf Raise (Standing)","calves",[],"squat",["machine","bodyweight"],"accessory"),
+  ex("calf_raise_seated","Calf Raise (Seated)","calves",[],"squat",["machine"],"accessory"),
+  ex("calf_press","Calf Press (Leg Press)","calves",[],"squat",["machine"],"accessory"),
+
+  // CHEST
+  ex("bench_bb","Bench Press (Barbell)","chest",["triceps","shoulders"],"push",["barbell","bench"],"compound"),
+  ex("bench_db","Bench Press (DB)","chest",["triceps","shoulders"],"push",["dumbbell","bench"],"compound"),
+  ex("incline_db","Incline DB Bench","chest",["shoulders","triceps"],"push",["dumbbell","bench"],"compound"),
+  ex("incline_bb","Incline Bench (Barbell)","chest",["shoulders","triceps"],"push",["barbell","bench"],"compound"),
+  ex("decline_bench","Decline Bench","chest",["triceps"],"push",["barbell","bench"],"compound"),
+  ex("machine_press","Chest Press (Machine)","chest",["triceps"],"push",["machine"],"compound"),
+  ex("plate_press","Plate Loaded Chest Press","chest",["triceps"],"push",["machine"],"compound"),
+  ex("cable_fly_hl","Cable Fly (High→Low)","chest",[],"push",["cable"],"accessory"),
+  ex("cable_fly_lh","Cable Fly (Low→High)","chest",[],"push",["cable"],"accessory"),
+  ex("pec_deck","Pec Deck","chest",[],"push",["machine"],"accessory"),
+  ex("pushups","Push-ups","chest",["triceps","shoulders"],"push",["bodyweight"],"compound"),
+  ex("dips_chest","Dips (Chest Bias)","chest",["triceps"],"push",["bodyweight"],"compound"),
+
+  // BACK
+  ex("lat_pd_wide","Lat Pulldown (Wide)","back",["biceps"],"pull",["cable","machine"],"compound"),
+  ex("lat_pd_neutral","Lat Pulldown (Neutral)","back",["biceps"],"pull",["cable","machine"],"compound"),
+  ex("pullups","Pull-ups","back",["biceps"],"pull",["bodyweight"],"compound"),
+  ex("assisted_pullup","Assisted Pull-up","back",["biceps"],"pull",["machine"],"compound"),
+  ex("bb_row","Barbell Row","back",["biceps"],"pull",["barbell"],"compound"),
+  ex("chest_supported_row","Chest-Supported Row","back",["biceps"],"pull",["dumbbell","bench","machine"],"compound"),
+  ex("seated_cable_row","Seated Cable Row","back",["biceps"],"pull",["cable"],"compound"),
+  ex("one_arm_cable_row","One-Arm Cable Row","back",["biceps"],"pull",["cable"],"compound"),
+  ex("tbar_row","T-Bar Row","back",["biceps"],"pull",["machine","barbell"],"compound"),
+  ex("machine_row","Row (Machine)","back",["biceps"],"pull",["machine"],"compound"),
+  ex("straight_arm_pd","Straight-Arm Pulldown","back",[],"pull",["cable"],"accessory"),
+  ex("face_pull","Face Pull","shoulders",["back"],"pull",["cable"],"accessory"),
+  ex("reverse_pec_deck","Reverse Pec Deck","shoulders",["back"],"pull",["machine"],"accessory"),
+  ex("shrug_bb","Shrugs (Barbell)","back",[],"pull",["barbell"],"accessory"),
+  ex("shrug_db","Shrugs (DB)","back",[],"pull",["dumbbell"],"accessory"),
+  ex("landmine_row","Landmine Row","back",["biceps"],"pull",["barbell","landmine"],"compound"),
+  ex("inverted_row","Inverted Row","back",["biceps"],"pull",["bodyweight"],"compound"),
+  ex("meadows_row","Meadows Row","back",["biceps"],"pull",["barbell","landmine"],"compound"),
+
+  // SHOULDERS
+  ex("ohp_bb","Overhead Press (Barbell)","shoulders",["triceps"],"push",["barbell"],"compound"),
+  ex("ohp_db","Shoulder Press (DB)","shoulders",["triceps"],"push",["dumbbell"],"compound"),
+  ex("machine_sh_press","Shoulder Press (Machine)","shoulders",["triceps"],"push",["machine"],"compound"),
+  ex("arnold_press","Arnold Press","shoulders",["triceps"],"push",["dumbbell"],"compound"),
+  ex("lat_raise_db","Lateral Raise (DB)","shoulders",[],"push",["dumbbell"],"accessory"),
+  ex("lat_raise_cable","Lateral Raise (Cable)","shoulders",[],"push",["cable"],"accessory"),
+  ex("lat_raise_machine","Lateral Raise (Machine)","shoulders",[],"push",["machine"],"accessory"),
+  ex("rear_delt_fly","Rear Delt Fly","shoulders",["back"],"pull",["dumbbell","cable","machine"],"accessory"),
+  ex("front_raise","Front Raise","shoulders",[],"push",["dumbbell","cable"],"accessory"),
+  ex("upright_row","Upright Row","shoulders",["back"],"pull",["barbell","cable"],"accessory"),
+  ex("y_raise","Y Raise (Incline Bench)","shoulders",[],"pull",["dumbbell","bench"],"accessory"),
+  ex("db_high_incline_press","High Incline Press (DB)","shoulders",["chest"],"push",["dumbbell","bench"],"compound"),
+
+  // BICEPS
+  ex("curl_bb","Barbell Curl","biceps",[],"pull",["barbell"],"accessory"),
+  ex("curl_ez","EZ-Bar Curl","biceps",[],"pull",["barbell"],"accessory"),
+  ex("curl_db","DB Curl","biceps",[],"pull",["dumbbell"],"accessory"),
+  ex("hammer_curl","Hammer Curl","biceps",[],"pull",["dumbbell"],"accessory"),
+  ex("incline_db_curl","Incline DB Curl (Seated)","biceps",[],"pull",["dumbbell","bench"],"accessory"),
+  ex("cable_curl","Cable Curl","biceps",[],"pull",["cable"],"accessory"),
+  ex("preacher_curl","Preacher Curl","biceps",[],"pull",["machine","bench"],"accessory"),
+  ex("machine_curl","Biceps Curl (Machine)","biceps",[],"pull",["machine"],"accessory"),
+  ex("seated_incline_curl_alt","Seated Incline Curl (Alt)","biceps",[],"pull",["dumbbell","bench"],"accessory"),
+
+  // TRICEPS
+  ex("rope_pushdown","Rope Pushdown","triceps",[],"push",["cable"],"accessory"),
+  ex("bar_pushdown","Straight Bar Pushdown","triceps",[],"push",["cable"],"accessory"),
+  ex("skullcrusher","Skull Crushers","triceps",[],"push",["barbell","dumbbell","bench"],"accessory"),
+  ex("oh_cable_ext","Overhead Cable Extension","triceps",[],"push",["cable"],"accessory"),
+  ex("oh_db_ext","Overhead DB Extension","triceps",[],"push",["dumbbell"],"accessory"),
+  ex("close_grip_bench","Close-Grip Bench","triceps",["chest"],"push",["barbell","bench"],"compound"),
+  ex("dips_triceps","Dips (Triceps Bias)","triceps",["chest"],"push",["bodyweight"],"compound"),
+  ex("machine_triceps","Triceps Extension (Machine)","triceps",[],"push",["machine"],"accessory"),
+
+  // CORE
+  ex("plank","Plank","core",[],"core",["bodyweight"],"core"),
+  ex("side_plank","Side Plank","core",[],"core",["bodyweight"],"core"),
+  ex("cable_crunch","Cable Crunch","core",[],"core",["cable"],"core"),
+  ex("hanging_knee_raise","Hanging Knee Raise","core",[],"core",["bodyweight"],"core"),
+  ex("hanging_leg_raise","Hanging Leg Raise","core",[],"core",["bodyweight"],"core"),
+  ex("dead_bug","Dead Bug","core",[],"core",["bodyweight"],"core"),
+  ex("pallof","Pallof Press","core",[],"core",["cable","band"],"core"),
+  ex("ab_wheel","Ab Wheel","core",[],"core",["bodyweight"],"core"),
+  ex("weighted_situp","Weighted Sit-up","core",[],"core",["plate"],"core"),
+  ex("back_ext_neutral","Back Extension (Neutral)","core",["glutes"],"hinge",["bench"],"core"),
+
+  // CARDIO / MOBILITY
+  ex("zone2","Zone 2 Cardio","cardio",[],"cardio",["treadmill","bike","rower"],"cardio"),
+  ex("intervals","Intervals","cardio",[],"cardio",["treadmill","bike","rower"],"cardio"),
+  ex("incline_walk","Incline Walk","cardio",[],"cardio",["treadmill"],"cardio"),
+  ex("mobility_flow","Mobility Flow","mobility",[],"mobility",["bodyweight"],"mobility"),
+  ex("hips_ankles","Hips + Ankles Mobility","mobility",[],"mobility",["bodyweight"],"mobility"),
+  ex("shoulder_mob","Shoulder Mobility","mobility",[],"mobility",["band"],"mobility"),
+];
+
+function ex(id,name,primary,secondary,pattern,equipment,category){
+  return { id, name, primaryMuscle:primary, secondaryMuscles:secondary, movementPattern:pattern, equipment, category };
+}
+const EX_BY_ID = Object.fromEntries(EX.map(e=>[e.id,e]));
+
+/* ------------------------- State ------------------------- */
 let state = {
-  v: 4,
+  v: 10,
   units: "imperial",
   onboarded: false,
   selectedISO: null,
   profile: {
     goalType: "hybrid",
     exp: "beginner",
-    age: null,
     height: null,
     weight: null,
     daysPerWeek: 4,
-    equipment: "gym",
-    timePerSession: 35,
+    timePerSession: 40,
     mobility: "mid",
     cardioPref: "some",
     alcohol: 1,
     lifestyle: "light",
-    limitations: "",
-    goalWeight: null,
-    timelineWeeks: null
+    limitations: ""
   },
   plan: { week: [], weekStartISO: null },
-  logs: { waterByISO: {}, workoutByISO: {}, weightEntries: [] }
+  logs: {
+    waterByISO: {},
+    workoutByISO: {}, // { completed, checks, setLogs: { exKey: { sets:[{reps,weight}], lastRec } } }
+    weightEntries: []
+  }
 };
 
 /* ------------------------- Helpers ------------------------- */
@@ -597,8 +984,6 @@ function numOrNull(v){ const n = parseFloat(v); return Number.isFinite(n) ? n : 
 function deepClone(x){ return JSON.parse(JSON.stringify(x)); }
 function lbsToKg(lbs){ return lbs / 2.2046226218; }
 function kgToLbs(kg){ return kg * 2.2046226218; }
-function fmtWeight(val){ if (val == null || val === "") return "—"; return state.units === "imperial" ? `${val} lb` : `${val} kg`; }
-function titleCase(s){ return s.replace(/\w\S*/g, (t)=>t.charAt(0).toUpperCase()+t.substr(1)); }
 
 /* ------------------------- Storage ------------------------- */
 function save(){ try { localStorage.setItem("myfitState", JSON.stringify(state)); } catch(e){} }
@@ -612,7 +997,15 @@ function load(){
   }catch(e){}
 }
 
+/* ------------------------- UI Top helpers ------------------------- */
+function openProfileHint(){ alert("Profile: We'll expand this later (cloud + profile settings)."); }
+function openQuickHelp(){ alert("Tip: Tap an exercise → Log sets. Use Audible for swaps/rest/replace. Export/Import in Settings."); }
+function connectedAppsHint(){ alert("Connected Apps: Phase 2 (Health/Strava). For now, manual logging."); }
+
 /* ------------------------- Tabs ------------------------- */
+function setTopTitle(name){
+  document.getElementById("topTitle").innerText = name;
+}
 function showTab(name){
   ["today","plan","goal","settings"].forEach(t=>{
     document.getElementById(`view-${t}`).classList.add("hidden");
@@ -620,6 +1013,14 @@ function showTab(name){
   });
   document.getElementById(`view-${name}`).classList.remove("hidden");
   document.getElementById(`nav-${name}`).classList.add("active");
+
+  setTopTitle(
+    name==="today" ? "Today" :
+    name==="plan" ? "Your Plan" :
+    name==="goal" ? "Progress" :
+    "Settings"
+  );
+
   renderAll();
 }
 
@@ -631,7 +1032,6 @@ function setUnits(u){
   const p = state.profile;
   if (p.weight != null) p.weight = (u==="metric") ? round1(lbsToKg(p.weight)) : round1(kgToLbs(p.weight));
   if (p.height != null) p.height = (u==="metric") ? round1(p.height * 2.54) : round1(p.height / 2.54);
-  if (p.goalWeight != null) p.goalWeight = (u==="metric") ? round1(lbsToKg(p.goalWeight)) : round1(kgToLbs(p.goalWeight));
 
   save();
   renderAll();
@@ -639,35 +1039,31 @@ function setUnits(u){
 
 /* ------------------------- Onboarding ------------------------- */
 function nextStep(n){
-  [1,2,3].forEach(s=>document.getElementById(`step${s}`).classList.add("hidden"));
-  document.getElementById(`step${n}`).classList.remove("hidden");
+  document.getElementById("step1").classList.toggle("hidden", n!==1);
+  document.getElementById("step2").classList.toggle("hidden", n!==2);
 }
 function finishOnboarding(){
   const p = state.profile;
   p.goalType = document.getElementById("goalType").value;
   p.exp = document.getElementById("exp").value;
-  p.age = numOrNull(document.getElementById("age").value);
   p.height = numOrNull(document.getElementById("height").value);
   p.weight = numOrNull(document.getElementById("weight").value);
   p.daysPerWeek = parseInt(document.getElementById("daysPerWeek").value, 10);
-  p.equipment = document.getElementById("equipment").value;
   p.timePerSession = parseInt(document.getElementById("timePerSession").value, 10);
   p.mobility = document.getElementById("mobility").value;
   p.cardioPref = document.getElementById("cardioPref").value;
   p.alcohol = parseInt(document.getElementById("alcohol").value, 10);
   p.lifestyle = document.getElementById("lifestyle").value;
   p.limitations = document.getElementById("limitations").value || "";
-  p.goalWeight = numOrNull(document.getElementById("goalWeight").value);
-  p.timelineWeeks = numOrNull(document.getElementById("timelineWeeks").value);
 
-  if (p.weight == null){ alert("Enter weight to generate plan + hydration."); return; }
+  if (p.weight == null){ alert("Enter weight to generate water target + plan."); return; }
 
   state.onboarded = true;
   state.selectedISO = isoToday();
   buildWeekForISO(state.selectedISO, true);
   ensureLogsForISO(state.selectedISO);
-  save();
 
+  save();
   document.getElementById("onboarding").classList.add("hidden");
   showTab("today");
 }
@@ -683,43 +1079,78 @@ function pickTrainDays(n){
   return patterns[n] || patterns[4];
 }
 function restTitleFor(p){ return p.mobility === "high" ? "Mobility + Easy Walk" : "Rest / Light Walk"; }
-function ex(id, name, setsReps){ return { id: id + "-" + Math.random().toString(16).slice(2,8), name, setsReps }; }
 
-function workoutTemplatesFor(goal, equip, exp){
-  const rep = exp==="beginner" ? "3×8–10" : exp==="intermediate" ? "4×6–10" : "5×5–8";
-  const acc = exp==="beginner" ? "2×10–12" : "3×10–15";
+/* Template builder uses exercise library so swaps stay consistent */
+function templateUpper(){
+  return [
+    mk("bench_bb"), mk("lat_pd_neutral"),
+    mk("ohp_db"), mk("seated_cable_row"),
+    mk("lat_raise_db"), mk("rope_pushdown"), mk("incline_db_curl"), mk("plank")
+  ];
+}
+function templateLower(){
+  return [
+    mk("leg_press_plate"), mk("rdl_bar"),
+    mk("bulgarian_split"), mk("ham_curl_seated"),
+    mk("leg_extension"), mk("calf_raise_seated"), mk("dead_bug")
+  ];
+}
+function templateFull(){
+  return [
+    mk("goblet_squat"), mk("bench_db"),
+    mk("chest_supported_row"), mk("hip_thrust_bb"),
+    mk("lat_raise_cable"), mk("hammer_curl"), mk("pallof")
+  ];
+}
+function templateCardio(){
+  return [ mk("zone2"), mk("mobility_flow") ];
+}
+function templateMobility(){
+  return [ mk("hips_ankles"), mk("shoulder_mob"), mk("mobility_flow") ];
+}
 
-  const lowerA = { title:"Lower (A)", exercises:[
-    ex("squat", equip==="bw" ? "Bodyweight Squat" : "Squat / Leg Press", rep),
-    ex("hinge", equip==="bw" ? "Glute Bridge" : "RDL / Deadlift Variation", rep),
-    ex("lunge", equip==="bw" ? "Split Squat" : "Split Squat / Lunge", acc),
-    ex("calves", "Calf Raises", acc),
-    ex("core", "Plank", "3×30–60s")
-  ]};
+function mk(exId){
+  const e = EX_BY_ID[exId];
+  const { sets, repRange } = defaultPrescription(e);
+  return {
+    key: exId + "-" + Math.random().toString(16).slice(2,8),
+    exId,
+    sets,
+    repRange, // {min,max} or null
+  };
+}
 
-  const upperA = { title:"Upper (A)", exercises:[
-    ex("push", equip==="bw" ? "Push-ups" : "Bench Press / DB Press", rep),
-    ex("pull", equip==="bw" ? "Inverted Row" : "Row (Cable/DB)", rep),
-    ex("press", equip==="bw" ? "Pike Push-up" : "Overhead Press", acc),
-    ex("lat", equip==="bw" ? "Band Pull-down" : "Lat Pull-down / Pull-ups", acc),
-    ex("arms", "Curls + Triceps", "2–3×10–15")
-  ]};
+function defaultPrescription(e){
+  // Baseline by category & experience
+  const exp = state.profile.exp;
+  const goal = state.profile.goalType;
 
-  const full = { title:"Full Body", exercises:[
-    ex("squat", equip==="bw" ? "Bodyweight Squat" : "Leg Press / Squat", rep),
-    ex("push", equip==="bw" ? "Push-ups" : "DB Bench / Machine Press", rep),
-    ex("pull", equip==="bw" ? "Inverted Row" : "Seated Row", rep),
-    ex("hinge", equip==="bw" ? "Glute Bridge" : "RDL", acc),
-    ex("core", "Core (dead bug / plank)", "3 sets")
-  ]};
+  // Rep ranges
+  let repRange = null;
+  let sets = 3;
 
-  const cardioShort = { title:"Cardio (Short)", exercises:[ ex("cardio","Intervals / Tempo","15–25 min") ] };
-  const cardioLong  = { title:"Cardio (Long)",  exercises:[ ex("cardio","Zone 2 / Easy","30–45 min") ] };
+  if(e.category === "compound"){
+    sets = exp==="beginner" ? 3 : exp==="intermediate" ? 4 : 5;
+    // hybrid/fat lean slightly higher reps; muscle moderate; endurance higher
+    if(goal==="endurance") repRange = {min:8,max:12};
+    else if(goal==="fat") repRange = {min:8,max:12};
+    else if(goal==="hybrid") repRange = {min:6,max:10};
+    else repRange = {min:6,max:10}; // muscle
+  } else if(e.category === "accessory"){
+    sets = exp==="beginner" ? 3 : 3;
+    repRange = goal==="endurance" ? {min:12,max:20} : {min:10,max:15};
+  } else if(e.category === "core"){
+    sets = 3;
+    repRange = null; // time/reps
+  } else if(e.category === "cardio"){
+    sets = 1;
+    repRange = null;
+  } else if(e.category === "mobility"){
+    sets = 1;
+    repRange = null;
+  }
 
-  if(goal==="muscle") return [upperA, lowerA, upperA, lowerA];
-  if(goal==="endurance") return [cardioShort, full, cardioLong, full];
-  if(goal==="fat") return [full, cardioShort, upperA, lowerA];
-  return [upperA, cardioShort, lowerA, cardioLong];
+  return { sets, repRange };
 }
 
 function buildWeekForISO(anyISO, force){
@@ -728,23 +1159,43 @@ function buildWeekForISO(anyISO, force){
 
   const p = state.profile;
   const trainDays = pickTrainDays(p.daysPerWeek);
-  const templates = workoutTemplatesFor(p.goalType, p.equipment, p.exp);
-
   state.plan.weekStartISO = startISO;
   state.plan.week = [];
 
-  let t = 0;
+  // rotate templates based on goal a bit
+  const blocks =
+    p.goalType==="endurance" ? ["cardio","full","cardio","full"] :
+    p.goalType==="muscle" ? ["upper","lower","upper","lower"] :
+    p.goalType==="fat" ? ["full","cardio","upper","lower"] :
+    ["upper","cardio","lower","full"]; // hybrid
+
+  let bi = 0;
   for(let i=0;i<7;i++){
     const iso = addDaysISO(startISO, i);
     if(trainDays.includes(i)){
-      const tpl = templates[t % templates.length];
-      state.plan.week.push({ iso, type:"workout", title: tpl.title, exercises: deepClone(tpl.exercises) });
-      t++;
-    }else{
-      state.plan.week.push({ iso, type:"rest", title: restTitleFor(p), exercises: [] });
+      const b = blocks[bi % blocks.length];
+      bi++;
+      const items =
+        b==="upper" ? templateUpper() :
+        b==="lower" ? templateLower() :
+        b==="full" ? templateFull() :
+        b==="cardio" ? templateCardio() :
+        templateMobility();
+
+      state.plan.week.push({
+        iso, type:"workout",
+        title: b==="cardio" ? "Cardio + Mobility" :
+               b==="upper" ? "Upper Body" :
+               b==="lower" ? "Lower Body" :
+               b==="full" ? "Full Body" : "Mobility",
+        items
+      });
+    } else {
+      state.plan.week.push({ iso, type:"rest", title: restTitleFor(p), items: [] });
     }
   }
 }
+
 function getPlanForISO(iso){
   buildWeekForISO(iso, false);
   return state.plan.week.find(d => d.iso === iso);
@@ -766,6 +1217,7 @@ function computeWaterTarget(){
     return { unit:"ml", glassSize, targetGlasses };
   }
 }
+
 function ensureLogsForISO(iso){
   if(!state.logs.waterByISO[iso]){
     const tgt = computeWaterTarget();
@@ -777,15 +1229,18 @@ function ensureLogsForISO(iso){
     };
   }
   if(!state.logs.workoutByISO[iso]){
-    state.logs.workoutByISO[iso] = { completed:false, checks:{}, notes:[] };
+    state.logs.workoutByISO[iso] = {
+      completed:false,
+      checks:{},
+      setLogs:{} // keyed by item.key
+    };
   } else {
-    // Ensure notes exists for older versions
-    state.logs.workoutByISO[iso].notes = state.logs.workoutByISO[iso].notes || [];
     state.logs.workoutByISO[iso].checks = state.logs.workoutByISO[iso].checks || {};
+    state.logs.workoutByISO[iso].setLogs = state.logs.workoutByISO[iso].setLogs || {};
   }
 }
 
-/* ------------------------- Day navigation ------------------------- */
+/* ------------------------- Navigation ------------------------- */
 function shiftSelected(delta){
   state.selectedISO = addDaysISO(state.selectedISO, delta);
   buildWeekForISO(state.selectedISO, false);
@@ -801,7 +1256,40 @@ function jumpToToday(){
   renderAll();
 }
 
-/* ------------------------- Week strip (tap days) ------------------------- */
+/* ------------------------- Hero & Week strip ------------------------- */
+function computeWeeklyAdherence(){
+  const planned = state.plan.week.filter(d=>d.type==="workout").length;
+  if(!planned) return 0;
+  let completed = 0;
+  for(const d of state.plan.week){
+    const log = state.logs.workoutByISO[d.iso];
+    if(d.type==="workout" && log?.completed) completed++;
+  }
+  return Math.round((completed/planned)*100);
+}
+
+function renderHero(){
+  const goalName = ({
+    fat:"Lose Fat Plan",
+    muscle:"Build Muscle Plan",
+    hybrid:"Functional Plan",
+    endurance:"Endurance Plan"
+  })[state.profile.goalType] || "Your Plan";
+
+  document.getElementById("heroName").innerText = goalName;
+  document.getElementById("heroMeta").innerText = `Week of ${state.plan.weekStartISO}`;
+
+  const planned = state.plan.week.filter(d=>d.type==="workout").length;
+  const done = state.plan.week.filter(d=>d.type==="workout" && state.logs.workoutByISO[d.iso]?.completed).length;
+  const adh = computeWeeklyAdherence();
+
+  document.getElementById("heroDone").innerText = `${done}/${planned}`;
+  document.getElementById("heroAdh").innerText = `${adh}%`;
+
+  const bar = planned ? Math.round((done/planned)*100) : 0;
+  document.getElementById("heroBar").style.width = `${bar}%`;
+}
+
 function renderWeekStrip(){
   const strip = document.getElementById("weekStrip");
   strip.innerHTML = "";
@@ -820,25 +1308,28 @@ function renderWeekStrip(){
   }
 }
 
-/* ------------------------- Water UI ------------------------- */
+/* ------------------------- Water ------------------------- */
 function renderWater(){
   const iso = state.selectedISO;
   ensureLogsForISO(iso);
   const w = state.logs.waterByISO[iso];
-  const targetText = (state.units==="imperial")
-    ? `Target: ${w.targetGlasses} × ${w.glassSize}oz`
-    : `Target: ${w.targetGlasses} × ${w.glassSize}ml`;
-  document.getElementById("waterTargetText").innerText = targetText;
+  const done = w.glassesDone.filter(Boolean).length;
+
+  document.getElementById("waterSummary").innerText = `${done}/${w.targetGlasses}`;
+  document.getElementById("waterTargetText").innerText =
+    (state.units==="imperial")
+      ? `Target: ${w.targetGlasses} × ${w.glassSize}oz`
+      : `Target: ${w.targetGlasses} × ${w.glassSize}ml`;
 
   const container = document.getElementById("glasses");
   container.innerHTML = "";
 
-  w.glassesDone.forEach((done, idx)=>{
+  w.glassesDone.forEach((isDone, idx)=>{
     const wrap = document.createElement("div");
     wrap.className = "glasswrap";
 
     const g = document.createElement("button");
-    g.className = "glass" + (done ? " done":"");
+    g.className = "glass" + (isDone ? " done":"");
     g.style.cursor = "pointer";
     g.onclick = ()=>toggleGlassSelected(idx);
 
@@ -870,279 +1361,378 @@ function resetWaterSelected(){
   renderAll();
 }
 
-/* ------------------------- Workout UI ------------------------- */
+/* ------------------------- Workout rendering + set logging ------------------------- */
+let setModalCtx = null; // { iso, itemKey }
+
 function renderWorkout(){
   const iso = state.selectedISO;
   ensureLogsForISO(iso);
-
   const day = getPlanForISO(iso);
-  document.getElementById("dayTitle").innerText = day ? day.title : "—";
-
   const log = state.logs.workoutByISO[iso];
-  const list = document.getElementById("workoutList");
-  list.innerHTML = "";
+
+  const summaryEl = document.getElementById("workoutSummary");
+  const titleEl = document.getElementById("dayTitle");
+  const listEl = document.getElementById("workoutList");
 
   if(!day){
-    list.innerHTML = `<div class="sub">No plan found for this date.</div>`;
+    summaryEl.innerText = "—";
+    titleEl.innerText = "—";
+    listEl.innerHTML = `<div class="sub">No plan found.</div>`;
     return;
   }
+
+  titleEl.innerText = day.title;
 
   if(day.type === "rest"){
-    list.innerHTML = `<div class="sub">😌 Rest day. Use “Make an Audible” to log a workout or change the plan.</div>`;
+    summaryEl.innerText = "Rest";
+    listEl.innerHTML = `<div class="sub">😌 Rest day. Use Audible to replace with a workout if you want.</div>`;
     return;
   }
 
-  day.exercises.forEach(ex=>{
+  // completion summary
+  const total = day.items.length;
+  const doneCount = day.items.filter(it => !!log.checks[it.key]).length;
+  summaryEl.innerText = `${doneCount}/${total}`;
+
+  listEl.innerHTML = "";
+
+  day.items.forEach(item=>{
+    const e = EX_BY_ID[item.exId];
     const row = document.createElement("div");
     row.className = "witem";
 
     const check = document.createElement("button");
-    const done = !!log.checks[ex.id];
-    check.className = "wcheck" + (done ? " done":"");
-    check.textContent = done ? "✓" : "";
-    check.onclick = ()=>toggleExerciseSelected(ex.id);
+    const isDone = !!log.checks[item.key];
+    check.className = "wcheck" + (isDone ? " done":"");
+    check.textContent = isDone ? "✓" : "";
+    check.onclick = ()=>toggleItemDone(item.key);
 
     const info = document.createElement("div");
+    info.style.flex = "1";
+
     const name = document.createElement("div");
     name.className = "wname";
-    name.textContent = ex.name;
+    name.textContent = e.name;
 
     const meta = document.createElement("div");
     meta.className = "wmeta";
-    meta.textContent = ex.setsReps;
+
+    const muscleChip = `<span class="chip">${MUSCLE_LABEL[e.primaryMuscle] || e.primaryMuscle}</span>`;
+    const patternChip = `<span class="chip">${PATTERN_LABEL[e.movementPattern] || e.movementPattern}</span>`;
+    const presc = prescriptionText(item, e);
+    const prescChip = `<span class="chip">${presc}</span>`;
+    meta.innerHTML = muscleChip + patternChip + prescChip;
+
+    // Next time hint if we have a recommendation
+    const setLog = log.setLogs[item.key];
+    const nextHint = document.createElement("div");
+    nextHint.className = "nextHint";
+    nextHint.textContent = setLog?.nextSuggestion ? `Next time: ${setLog.nextSuggestion}` : "";
 
     info.appendChild(name);
     info.appendChild(meta);
+    if(nextHint.textContent) info.appendChild(nextHint);
+
+    const right = document.createElement("div");
+    right.className = "rightBtns";
+
+    const logBtn = document.createElement("button");
+    logBtn.className = "miniBtn primary";
+    logBtn.textContent = "Log Sets";
+    logBtn.onclick = ()=>openSetModal(item.key);
+
+    const swapBtn = document.createElement("button");
+    swapBtn.className = "miniBtn";
+    swapBtn.textContent = "Swap";
+    swapBtn.onclick = ()=>{
+      openAudible();
+      setAudMode(0);
+      // preselect this item
+      setTimeout(()=>{
+        const sel = document.getElementById("swapFrom");
+        if(sel){
+          sel.value = item.key;
+          renderSwapCandidates();
+        }
+      }, 0);
+    };
+
+    right.appendChild(logBtn);
+    right.appendChild(swapBtn);
 
     row.appendChild(check);
     row.appendChild(info);
-    list.appendChild(row);
-  });
+    row.appendChild(right);
 
-  const completed = log.completed ? "✅ Completed" : "⏳ In progress";
-  document.getElementById("selDayHint").innerText = `Workout status: ${completed}`;
+    listEl.appendChild(row);
+  });
 }
-function toggleExerciseSelected(exId){
+
+function prescriptionText(item, e){
+  if(e.category==="cardio") return "20–40 min";
+  if(e.category==="mobility") return "10–20 min";
+  if(e.category==="core") return `${item.sets} sets`;
+  if(!item.repRange) return `${item.sets} sets`;
+  return `${item.sets}×${item.repRange.min}–${item.repRange.max}`;
+}
+
+function toggleItemDone(itemKey){
   const iso = state.selectedISO;
   const log = state.logs.workoutByISO[iso];
-  log.checks[exId] = !log.checks[exId];
+  log.checks[itemKey] = !log.checks[itemKey];
   save();
   renderAll();
 }
+
 function completeSelectedWorkout(){
   const iso = state.selectedISO;
-  const log = state.logs.workoutByISO[iso];
-  log.completed = true;
+  ensureLogsForISO(iso);
+  const day = getPlanForISO(iso);
+  if(day?.type !== "workout"){
+    alert("This day is Rest. Use Audible to replace with a workout.");
+    return;
+  }
+  state.logs.workoutByISO[iso].completed = true;
   save();
   renderAll();
 }
-function makeSelectedRest(){
+
+/* ------------------------- Set Logger Modal ------------------------- */
+function openSetModal(itemKey){
   const iso = state.selectedISO;
-  const idx = state.plan.week.findIndex(d=>d.iso===iso);
-  if(idx>=0){
-    state.plan.week[idx] = { iso, type:"rest", title: restTitleFor(state.profile), exercises: [] };
-  }
+  const day = getPlanForISO(iso);
+  const item = day.items.find(i=>i.key===itemKey);
+  const e = EX_BY_ID[item.exId];
+
+  setModalCtx = { iso, itemKey };
+
+  document.getElementById("setTitle").innerText = `Log Sets • ${e.name}`;
+  document.getElementById("setMeta").innerText =
+    `${MUSCLE_LABEL[e.primaryMuscle]} • ${PATTERN_LABEL[e.movementPattern]} • ${prescriptionText(item,e)}`;
+
+  // build rows
+  const log = state.logs.workoutByISO[iso];
+  const existing = log.setLogs[itemKey]?.sets || [];
+  const desiredSets = item.sets || 3;
+  const sets = existing.length ? existing : Array.from({length:desiredSets}, ()=>({reps:"",weight:""}));
+
+  renderSetRows(sets);
+
+  // show current rec based on existing sets
+  document.getElementById("setRec").innerText = "—";
+
+  document.getElementById("setModal").classList.add("show");
+}
+
+function renderSetRows(sets){
+  const container = document.getElementById("setRows");
+  container.innerHTML = "";
+
+  sets.forEach((s, idx)=>{
+    const box = document.createElement("div");
+    box.className = "listItem";
+
+    const top = document.createElement("div");
+    top.className = "listItemTop";
+    top.innerHTML = `<div class="listItemName">Set ${idx+1}</div><div class="tiny">${state.units==="imperial" ? "lb" : "kg"}</div>`;
+
+    const row = document.createElement("div");
+    row.className = "row";
+    row.style.marginTop = "10px";
+
+    const reps = document.createElement("input");
+    reps.type = "number";
+    reps.placeholder = "Reps";
+    reps.value = s.reps ?? "";
+    reps.oninput = ()=>{ s.reps = reps.value; previewRecommendation(); };
+
+    const wt = document.createElement("input");
+    wt.type = "number";
+    wt.placeholder = "Weight";
+    wt.value = s.weight ?? "";
+    wt.oninput = ()=>{ s.weight = wt.value; previewRecommendation(); };
+
+    row.appendChild(reps);
+    row.appendChild(wt);
+
+    box.appendChild(top);
+    box.appendChild(row);
+    container.appendChild(box);
+  });
+
+  // stash sets in DOM for add/remove
+  container._sets = sets;
+  previewRecommendation();
+}
+
+function addSetRow(){
+  const container = document.getElementById("setRows");
+  const sets = container._sets || [];
+  sets.push({reps:"",weight:""});
+  renderSetRows(sets);
+}
+function removeSetRow(){
+  const container = document.getElementById("setRows");
+  const sets = container._sets || [];
+  if(sets.length<=1) return;
+  sets.pop();
+  renderSetRows(sets);
+}
+
+function previewRecommendation(){
+  if(!setModalCtx) return;
+  const { iso, itemKey } = setModalCtx;
+  const day = getPlanForISO(iso);
+  const item = day.items.find(i=>i.key===itemKey);
+  const e = EX_BY_ID[item.exId];
+
+  const sets = (document.getElementById("setRows")._sets || []).map(s=>({
+    reps: parseInt(s.reps,10),
+    weight: parseFloat(s.weight)
+  })).filter(x=>Number.isFinite(x.reps) && Number.isFinite(x.weight));
+
+  const rec = computeNextSuggestion(e, item, sets);
+  document.getElementById("setRec").innerText = rec ? `Recommendation: ${rec}` : "Recommendation: —";
+}
+
+function saveSetLog(){
+  if(!setModalCtx) return;
+  const { iso, itemKey } = setModalCtx;
+  const day = getPlanForISO(iso);
+  const item = day.items.find(i=>i.key===itemKey);
+  const e = EX_BY_ID[item.exId];
+
+  const setsRaw = (document.getElementById("setRows")._sets || []);
+  const sets = setsRaw.map(s=>({
+    reps: numOrNull(s.reps),
+    weight: numOrNull(s.weight)
+  }));
+
+  // Save
+  const log = state.logs.workoutByISO[iso];
+  log.setLogs[itemKey] = log.setLogs[itemKey] || {};
+  log.setLogs[itemKey].sets = sets;
+
+  // Compute and store next suggestion
+  const compact = sets.filter(x=>x.reps!=null && x.weight!=null);
+  const suggestion = computeNextSuggestion(e, item, compact);
+  log.setLogs[itemKey].nextSuggestion = suggestion || "";
+
+  // mark item checked if all sets have data
+  const allFilled = sets.length && sets.every(s=>s.reps!=null && s.weight!=null);
+  if(allFilled) log.checks[itemKey] = true;
+
   save();
+  closeSetModal();
   renderAll();
 }
 
-/* ------------------------- Audible (BUG FIXED) ------------------------- */
-function looksLikeWorkoutLog(text){
-  const t = text.toLowerCase().trim();
-
-  // Explicit log triggers
-  if (t.startsWith("i did:") || t.startsWith("did:") || t.startsWith("workout:") || t.startsWith("log:")) return true;
-
-  // Multiple items separated by commas/newlines AND contains at least one exercise-y keyword
-  const hasList = (t.includes(",") || t.includes("\n") || t.includes(";"));
-  const exKeywords = ["squat","bench","row","deadlift","rdl","press","curl","tricep","pull","lat","lunge","split squat","leg press","run","mile","cardio","bike","treadmill","stairs"];
-  const hasKeyword = exKeywords.some(k => t.includes(k));
-  const hasSets = /\d+\s*[x×]\s*\d+/i.test(t);
-
-  // If it has sets/reps anywhere, it's almost certainly a workout list
-  if (hasSets) return true;
-
-  // If it’s a list + keyword, treat as workout log
-  if (hasList && hasKeyword) return true;
-
-  return false;
+function closeSetModal(){
+  document.getElementById("setModal").classList.remove("show");
+  setModalCtx = null;
 }
 
-function parseWorkoutTextToExercises(text){
-  const raw = text
-    .replace(/^i did:\s*/i,"")
-    .replace(/^did:\s*/i,"")
-    .replace(/^workout:\s*/i,"")
-    .replace(/^log:\s*/i,"")
-    .replace(/\n/g, ",")
-    .split(",")
-    .map(s=>s.trim())
-    .filter(Boolean);
+function computeNextSuggestion(e, item, loggedSets){
+  // If not enough data, no suggestion
+  if(!loggedSets || loggedSets.length===0) return "";
 
-  if(!raw.length) return [];
+  // For cardio/mobility/core: skip
+  if(e.category==="cardio") return "Add 2–5 min next time";
+  if(e.category==="mobility") return "Add 2–5 min next time";
+  if(e.category==="core") return "Add reps/time next time";
 
-  const out = [];
-  for(const item of raw){
-    const m = item.match(/(\d+)\s*[x×]\s*(\d+)(?:\s*[-–]\s*(\d+))?/i);
-    const setsReps = m ? `${m[1]}×${m[2]}${m[3] ? "–"+m[3] : ""}` : "3×8–12";
+  // Determine target rep range
+  const rr = item.repRange || (e.category==="accessory" ? {min:10,max:15} : {min:6,max:10});
+  const reps = loggedSets.map(s=>s.reps);
+  const weights = loggedSets.map(s=>s.weight);
 
-    const name = item
-      .replace(/(\d+)\s*[x×]\s*\d+(?:\s*[-–]\s*\d+)?/i,"")
-      .replace(/[:\-]+$/,"")
-      .trim() || "Workout Item";
+  // Use the "working weight" as median-ish (average)
+  const w = weights.reduce((a,b)=>a+b,0) / weights.length;
+  const allAtOrAboveMax = reps.every(r=>r >= rr.max);
+  const allAtOrAboveMin = reps.every(r=>r >= rr.min);
 
-    out.push(ex("aud", titleCase(name), setsReps));
+  // Determine micro progression constraints
+  // Dumbbells: if big jump, we microprogress (reps/tempo/sets). We don't know DB increments; assume could be 5 lb jumps.
+  // Barbell upper: +2.5, lower: +5 (your C rule).
+  const isUpperCompound = e.category==="compound" && ["chest","shoulders","back"].includes(e.primaryMuscle) && e.movementPattern!=="squat" && e.movementPattern!=="hinge";
+  const isLowerCompound = e.category==="compound" && ["quads","glutes","hamstrings","calves"].includes(e.primaryMuscle) && (e.movementPattern==="squat" || e.movementPattern==="hinge");
+  const isAccessory = e.category==="accessory";
+
+  // If hit top on all sets: suggest progress
+  if(allAtOrAboveMax){
+    if(isLowerCompound) return `${roundTo(w + 5)} ${unitLabel()} for ${item.sets}×${rr.min}–${rr.max}`;
+    if(isUpperCompound) return `${roundTo(w + 2.5)} ${unitLabel()} for ${item.sets}×${rr.min}–${rr.max}`;
+
+    // Accessory / dumbbell microprogression
+    // If next increment likely big, recommend reps/tempo first
+    return microAccessorySuggestion(w, rr, item.sets);
   }
-  return out.slice(0, 12);
+
+  // If mostly hitting top (e.g. average >= max-1): push reps up
+  const avgReps = reps.reduce((a,b)=>a+b,0) / reps.length;
+  if(avgReps >= rr.max - 1 && allAtOrAboveMin){
+    return `${roundTo(w)} ${unitLabel()} • aim ${rr.max} reps each set`;
+  }
+
+  // If below min: reduce load slightly or reduce reps target
+  const belowMin = reps.some(r=>r < rr.min);
+  if(belowMin){
+    const dec = isLowerCompound ? 5 : isUpperCompound ? 2.5 : 2.5;
+    return `${roundTo(Math.max(0, w - dec))} ${unitLabel()} • aim ${rr.min} reps`;
+  }
+
+  // Otherwise: keep weight, push reps
+  return `${roundTo(w)} ${unitLabel()} • add 1 rep per set if possible`;
 }
 
-function inferTitleFromText(txt){
-  const t = txt.toLowerCase();
-  if(t.includes("leg") || t.includes("squat") || t.includes("rdl") || t.includes("deadlift")) return "Legs (Logged)";
-  if(t.includes("bench") || t.includes("chest") || t.includes("press")) return "Upper Push (Logged)";
-  if(t.includes("row") || t.includes("pull") || t.includes("lat")) return "Upper Pull (Logged)";
-  if(t.includes("run") || t.includes("mile") || t.includes("cardio") || t.includes("bike")) return "Cardio (Logged)";
-  return "Logged Workout";
+function microAccessorySuggestion(w, rr, sets){
+  // "B" choice: microprogress before big jump
+  // Suggest: add reps toward top; if already top, tempo or +set; then jump later.
+  // We don't track history across sessions here yet, so we propose step 1.
+  if(rr.max < 15){
+    return `${roundTo(w)} ${unitLabel()} • next: push reps toward ${rr.max} (clean form)`;
+  }
+  return `${roundTo(w)} ${unitLabel()} • next: slow eccentric (3s down) OR +1 set`;
 }
 
-function applyAudible(adjustWeek){
+function roundTo(val){
+  // keep 0.5 precision for kg/lb display; avoid long floats
+  return Math.round(val * 2) / 2;
+}
+function unitLabel(){ return state.units==="imperial" ? "lb" : "kg"; }
+
+/* ------------------------- Analyze ------------------------- */
+function analyzeDay(){
   const iso = state.selectedISO;
   ensureLogsForISO(iso);
+  const day = getPlanForISO(iso);
+  const w = state.logs.waterByISO[iso];
+  const log = state.logs.workoutByISO[iso];
 
-  const txt = (document.getElementById("audibleIn").value || "").trim();
-  if(!txt){
-    document.getElementById("audibleOut").innerText = "Type what you did or what you want changed.";
-    return;
+  const waterDone = w.glassesDone.filter(Boolean).length;
+  const waterTarget = w.targetGlasses;
+
+  let workoutStatus = "Rest day 😌";
+  if(day.type==="workout"){
+    workoutStatus = log.completed ? "Workout completed ✅" : "Workout not marked complete ⏳";
   }
 
-  const lower = txt.toLowerCase();
-  const idx = state.plan.week.findIndex(d=>d.iso===iso);
-
-  // Handle explicit swap command without overwriting whole workout
-  if(lower.startsWith("swap ") && lower.includes(" for ")){
-    const parts = lower.slice(5).split(" for ");
-    const from = (parts[0]||"").trim();
-    const to = (parts[1]||"").trim();
-    const day = getPlanForISO(iso);
-
-    if(day.type !== "workout"){
-      state.logs.workoutByISO[iso].notes.push({ ts: Date.now(), text: "Audible: " + txt });
-      document.getElementById("audibleOut").innerText = "That day is Rest. Say “I did:” to log a workout, or use “Update + adjust week”.";
-      document.getElementById("audibleIn").value = "";
-      save(); renderAll(); return;
+  // count suggestions ready
+  let ready = 0;
+  if(day.type==="workout"){
+    for(const it of day.items){
+      const rec = log.setLogs[it.key]?.nextSuggestion;
+      if(rec && rec.toLowerCase().includes("aim")===false) ready++; // rough
     }
-
-    const changed = swapExerciseName(day, from, to);
-    state.logs.workoutByISO[iso].notes.push({ ts: Date.now(), text: "Audible: " + txt });
-
-    document.getElementById("audibleOut").innerText = changed
-      ? `Swapped “${from}” → “${to}” and kept your checkmarks. ✅`
-      : `Couldn't find “${from}” in that day's list.`;
-
-    document.getElementById("audibleIn").value = "";
-    if(adjustWeek) rebalanceWeekAfterChange(idx);
-    save(); renderAll(); return;
   }
 
-  // Handle explicit rest statement
-  const restIntent =
-    (lower.includes("rest") && (lower.includes("today") || lower.includes("taking") || lower.startsWith("rest"))) ||
-    lower.includes("make it a rest") || lower.includes("take it as rest");
-
-  if(restIntent){
-    if(idx>=0){
-      state.plan.week[idx] = { iso, type:"rest", title: restTitleFor(state.profile), exercises: [] };
-    }
-    state.logs.workoutByISO[iso].notes.push({ ts: Date.now(), text: "Audible: " + txt });
-    document.getElementById("audibleOut").innerText = "Updated: set this day to Rest. 😌";
-    document.getElementById("audibleIn").value = "";
-    if(adjustWeek) rebalanceWeekAfterChange(idx);
-    save(); renderAll(); return;
-  }
-
-  // ✅ BUG FIX: Only overwrite the workout if it truly looks like a workout log
-  if(!looksLikeWorkoutLog(txt)){
-    // Treat as a NOTE + suggestion
-    state.logs.workoutByISO[iso].notes.push({ ts: Date.now(), text: "Note: " + txt });
-
-    let suggestion = "Logged as a note. Your plan is unchanged.";
-    if(lower.includes("shovel") || lower.includes("yard") || lower.includes("moving") || lower.includes("steps")){
-      suggestion = "Logged as a note (activity). Want me to count this as cardio and make today a light/recovery day?";
-    } else if(lower.includes("upper")){
-      suggestion = "Logged as a note. If you want to change the workout, use: “I did: …” or “swap X for Y”.";
-    } else if(lower.includes("busy") || lower.includes("no time") || lower.includes("tired")){
-      suggestion = "Logged as a note. If needed, say: “make it a rest” or “swap to 20 min cardio”.";
-    }
-
-    document.getElementById("audibleOut").innerText = suggestion;
-    document.getElementById("audibleIn").value = "";
-    save(); renderAll(); return;
-  }
-
-  // Workout log path: overwrite that day plan with parsed exercises
-  const exs = parseWorkoutTextToExercises(txt);
-  const title = inferTitleFromText(txt);
-
-  if(idx>=0){
-    state.plan.week[idx] = {
-      iso,
-      type:"workout",
-      title,
-      exercises: exs.length ? exs : [ex("aud","General Training","30–45 min")]
-    };
-  }
-  state.logs.workoutByISO[iso].notes.push({ ts: Date.now(), text: "Workout logged: " + txt });
-
-  document.getElementById("audibleOut").innerText =
-    adjustWeek ? "Updated this day and rebalanced the rest of the week. ✅"
-               : "Updated this day. ✅ (Use “Update + adjust week” to rebalance.)";
-
-  document.getElementById("audibleIn").value = "";
-  if(adjustWeek) rebalanceWeekAfterChange(idx);
-
-  save();
-  renderAll();
+  const adh = computeWeeklyAdherence();
+  document.getElementById("analysisOut").innerText =
+    `Water ${waterDone}/${waterTarget} • ${workoutStatus} • ${ready} exercises have next-step guidance • Weekly adherence ${adh}%`;
 }
 
-function swapExerciseName(day, from, to){
-  if(!day?.exercises?.length) return false;
-  let hit = false;
-  for(const ex of day.exercises){
-    const n = ex.name.toLowerCase();
-    if(n.includes(from)){
-      ex.name = titleCase(to);
-      hit = true;
-      break;
-    }
-  }
-  return hit;
-}
-
-function rebalanceWeekAfterChange(changedIdx){
-  const desired = state.profile.daysPerWeek;
-  const current = state.plan.week.filter(d=>d.type==="workout").length;
-  if(current === desired) return;
-
-  if(current > desired){
-    const cutIdx = state.plan.week.findIndex((d,i)=> i!==changedIdx && i>changedIdx && d.type==="workout");
-    if(cutIdx>=0){
-      state.plan.week[cutIdx] = { iso: state.plan.week[cutIdx].iso, type:"rest", title: restTitleFor(state.profile), exercises: [] };
-    }
-    return;
-  }
-
-  if(current < desired){
-    const addIdx = state.plan.week.findIndex((d,i)=> i!==changedIdx && i>changedIdx && d.type==="rest");
-    if(addIdx>=0){
-      const tpls = workoutTemplatesFor(state.profile.goalType, state.profile.equipment, state.profile.exp);
-      const tpl = tpls[0];
-      state.plan.week[addIdx] = { iso: state.plan.week[addIdx].iso, type:"workout", title: tpl.title, exercises: deepClone(tpl.exercises) };
-    }
-  }
-}
-
-/* ------------------------- Plan UI ------------------------- */
-function renderWeek(){
+/* ------------------------- Plan grid ------------------------- */
+function renderWeekGrid(){
   const grid = document.getElementById("weekGrid");
   grid.innerHTML = "";
   const sel = state.selectedISO;
@@ -1171,48 +1761,23 @@ function renderWeek(){
 
     grid.appendChild(box);
   }
-}
 
-/* ------------------------- Analyze + Adherence ------------------------- */
-function computeWeeklyAdherence(){
   const planned = state.plan.week.filter(d=>d.type==="workout").length;
-  if(!planned) return 0;
-  let completed = 0;
-  for(const d of state.plan.week){
-    const log = state.logs.workoutByISO[d.iso];
-    if(d.type==="workout" && log?.completed) completed++;
-  }
-  return Math.round((completed/planned)*100);
-}
-function analyzeDay(){
-  const iso = state.selectedISO;
-  ensureLogsForISO(iso);
-  const day = getPlanForISO(iso);
-  const w = state.logs.waterByISO[iso];
-  const wl = state.logs.workoutByISO[iso];
-
-  const waterDone = w.glassesDone.filter(Boolean).length;
-  const waterTarget = w.targetGlasses;
-
-  const workoutStatus =
-    day.type==="rest" ? "Rest day 😌"
-      : (wl.completed ? "Workout completed ✅" : "Workout not marked complete ⏳");
-
-  const adherence = computeWeeklyAdherence();
-  const notes = wl.notes?.length ? `Notes: ${wl.notes.length}` : "Notes: 0";
-
-  document.getElementById("analysisOut").innerText =
-    `🧠 ${iso}: Water ${waterDone}/${waterTarget} • ${workoutStatus} • Weekly adherence ${adherence}% • ${notes}`;
+  const done = state.plan.week.filter(d=>d.type==="workout" && state.logs.workoutByISO[d.iso]?.completed).length;
+  const adh = computeWeeklyAdherence();
+  document.getElementById("weeklySummary").innerText = `Workouts completed ${done}/${planned} • Adherence ${adh}%`;
 }
 
-/* ------------------------- Goal change ------------------------- */
+/* ------------------------- Goal/Settings ------------------------- */
 function openGoalChange(){
   document.getElementById("goalChange").classList.remove("hidden");
   document.getElementById("newGoalType").value = state.profile.goalType;
   document.getElementById("newDays").value = String(state.profile.daysPerWeek);
   document.getElementById("newTime").value = String(state.profile.timePerSession);
 }
-function closeGoalChange(){ document.getElementById("goalChange").classList.add("hidden"); }
+function closeGoalChange(){
+  document.getElementById("goalChange").classList.add("hidden");
+}
 function applyGoalChange(){
   state.profile.goalType = document.getElementById("newGoalType").value;
   state.profile.daysPerWeek = parseInt(document.getElementById("newDays").value,10);
@@ -1222,8 +1787,6 @@ function applyGoalChange(){
   save();
   renderAll();
 }
-
-/* ------------------------- Settings weight entry ------------------------- */
 function saveWeight(){
   const v = numOrNull(document.getElementById("setWeight").value);
   if(v == null){ alert("Enter a number."); return; }
@@ -1232,8 +1795,6 @@ function saveWeight(){
   save();
   renderAll();
 }
-
-/* ------------------------- Export / Import ------------------------- */
 function exportState(){
   const box = document.getElementById("exportBox");
   box.classList.remove("hidden");
@@ -1258,52 +1819,330 @@ function wipeAll(){
   location.reload();
 }
 
+/* ------------------------- Audible Modal (Swap/Rest/Replace) ------------------------- */
+let audMode = 0;
+let audAccessory = false;
+
+function openAudible(){
+  document.getElementById("audibleModal").classList.add("show");
+  setAudMode(audMode);
+  populateSwapFrom();
+  renderSwapCandidates();
+}
+function closeAudible(){
+  document.getElementById("audibleModal").classList.remove("show");
+}
+function closeModalOnBackdrop(ev, id){
+  if(ev.target.id === id){
+    document.getElementById(id).classList.remove("show");
+  }
+}
+function setAudMode(m){
+  audMode = m;
+  document.getElementById("audMode0").classList.toggle("active", m===0);
+  document.getElementById("audMode1").classList.toggle("active", m===1);
+  document.getElementById("audMode2").classList.toggle("active", m===2);
+
+  document.getElementById("audSwap").classList.toggle("hidden", m!==0);
+  document.getElementById("audRest").classList.toggle("hidden", m!==1);
+  document.getElementById("audReplace").classList.toggle("hidden", m!==2);
+
+  document.getElementById("audibleOut").innerText = "—";
+}
+
+function toggleAccessory(){
+  audAccessory = !audAccessory;
+  document.getElementById("accToggle").innerText = audAccessory ? "On" : "Off";
+  renderSwapCandidates();
+}
+
+function populateSwapFrom(){
+  const iso = state.selectedISO;
+  const day = getPlanForISO(iso);
+  const sel = document.getElementById("swapFrom");
+  sel.innerHTML = "";
+
+  if(!day || day.type!=="workout"){
+    const opt = document.createElement("option");
+    opt.value = "";
+    opt.textContent = "No workout items today";
+    sel.appendChild(opt);
+    return;
+  }
+
+  day.items.forEach(it=>{
+    const e = EX_BY_ID[it.exId];
+    const opt = document.createElement("option");
+    opt.value = it.key;
+    opt.textContent = e.name;
+    sel.appendChild(opt);
+  });
+
+  // keep current selection if possible
+  if(!sel.value && day.items[0]) sel.value = day.items[0].key;
+}
+
+function renderSwapCandidates(){
+  const iso = state.selectedISO;
+  const day = getPlanForISO(iso);
+  const out = document.getElementById("audibleOut");
+
+  if(!day || day.type!=="workout"){
+    document.getElementById("swapFromMeta").innerHTML = `<span class="chip">No workout</span>`;
+    document.getElementById("swapCandidates").innerHTML = `<div class="sub">This is a rest day. Use “Replace” to make a workout.</div>`;
+    return;
+  }
+
+  const fromKey = document.getElementById("swapFrom").value;
+  const fromItem = day.items.find(i=>i.key===fromKey);
+  if(!fromItem) return;
+  const fromEx = EX_BY_ID[fromItem.exId];
+
+  // show meta
+  document.getElementById("swapFromMeta").innerHTML =
+    `<span class="chip">${MUSCLE_LABEL[fromEx.primaryMuscle]}</span>` +
+    `<span class="chip">${PATTERN_LABEL[fromEx.movementPattern]}</span>` +
+    `<span class="chip">${fromEx.category}</span>`;
+
+  const candidates = rankCandidates(fromEx, audAccessory);
+
+  const list = document.getElementById("swapCandidates");
+  list.innerHTML = "";
+
+  // show top 16 to keep UI tight
+  const top = candidates.slice(0, 16);
+  top.forEach(c=>{
+    const e = c.e;
+    const box = document.createElement("div");
+    box.className = "listItem";
+
+    const topRow = document.createElement("div");
+    topRow.className = "listItemTop";
+    topRow.innerHTML = `<div class="listItemName">${e.name}</div><div class="tiny">${c.reason}</div>`;
+
+    const meta = document.createElement("div");
+    meta.className = "listItemMeta";
+    meta.innerHTML =
+      `<span class="chip">${MUSCLE_LABEL[e.primaryMuscle]}</span>` +
+      `<span class="chip">${PATTERN_LABEL[e.movementPattern]}</span>` +
+      `<span class="chip">${e.category}</span>`;
+
+    const btnRow = document.createElement("div");
+    btnRow.className = "row";
+    btnRow.style.marginTop = "10px";
+
+    const apply = document.createElement("button");
+    apply.className = "btn";
+    apply.textContent = "Apply swap ✅";
+    apply.onclick = ()=>{
+      applySwap(fromKey, e.id);
+      out.innerText = `Swapped: ${fromEx.name} → ${e.name}`;
+    };
+
+    btnRow.appendChild(apply);
+
+    box.appendChild(topRow);
+    box.appendChild(meta);
+    box.appendChild(btnRow);
+
+    list.appendChild(box);
+  });
+}
+
+function rankCandidates(fromEx, allowAccessory){
+  // Hybrid B+C: match primary muscle OR movement pattern; prefer both.
+  // Default hides accessory alternatives unless toggled.
+  // Sort:
+  // 1) primary+pattern
+  // 2) primary
+  // 3) pattern
+  // 4) secondary muscle match
+  const fromPrimary = fromEx.primaryMuscle;
+  const fromPattern = fromEx.movementPattern;
+
+  let pool = EX.filter(e => e.id !== fromEx.id);
+
+  // default: keep category tier sane
+  // If from is compound, default to compounds; allow accessories only when toggle ON.
+  if(fromEx.category === "compound" && !allowAccessory){
+    pool = pool.filter(e => e.category === "compound");
+  }
+  // If from is accessory, keep accessories by default; compounds are ok too but less common
+  if(fromEx.category === "accessory" && !allowAccessory){
+    pool = pool.filter(e => e.category !== "core" && e.category !== "mobility" && e.category !== "cardio");
+  }
+
+  // must match primary OR pattern OR secondary overlap
+  const filtered = pool.filter(e=>{
+    const secHit = e.secondaryMuscles?.includes(fromPrimary) || fromEx.secondaryMuscles?.includes(e.primaryMuscle);
+    return e.primaryMuscle === fromPrimary || e.movementPattern === fromPattern || secHit;
+  });
+
+  const ranked = filtered.map(e=>{
+    const primary = e.primaryMuscle === fromPrimary;
+    const pattern = e.movementPattern === fromPattern;
+    const secHit = e.secondaryMuscles?.includes(fromPrimary) || fromEx.secondaryMuscles?.includes(e.primaryMuscle);
+    let score = 0;
+    let reason = "";
+
+    if(primary && pattern){ score = 100; reason = "best match"; }
+    else if(primary){ score = 80; reason = "same muscle"; }
+    else if(pattern){ score = 65; reason = "same pattern"; }
+    else if(secHit){ score = 50; reason = "secondary match"; }
+
+    // penalize weird category swaps unless accessory toggle is on
+    if(fromEx.category==="compound" && e.category==="accessory" && !allowAccessory) score -= 100;
+    if(e.category==="cardio" || e.category==="mobility") score -= 80;
+
+    return { e, score, reason };
+  }).filter(x=>x.score>0)
+    .sort((a,b)=>b.score-a.score || a.e.name.localeCompare(b.e.name));
+
+  return ranked;
+}
+
+function applySwap(fromKey, toExId){
+  const iso = state.selectedISO;
+  const day = getPlanForISO(iso);
+  ensureLogsForISO(iso);
+  const log = state.logs.workoutByISO[iso];
+
+  const idx = day.items.findIndex(i=>i.key===fromKey);
+  if(idx<0) return;
+
+  const oldItem = day.items[idx];
+  const oldEx = EX_BY_ID[oldItem.exId];
+  const newEx = EX_BY_ID[toExId];
+
+  // Hybrid set/rep logic:
+  // compound->compound keep structure
+  // compound->accessory adjust
+  // accessory->compound adjust
+  // accessory->accessory keep
+  let newSets = oldItem.sets;
+  let newRR = oldItem.repRange;
+
+  if(oldEx.category==="compound" && newEx.category==="compound"){
+    // keep
+  } else if(oldEx.category==="compound" && newEx.category==="accessory"){
+    newSets = 3;
+    newRR = state.profile.goalType==="endurance" ? {min:12,max:20} : {min:10,max:15};
+  } else if(oldEx.category==="accessory" && newEx.category==="compound"){
+    newSets = state.profile.exp==="beginner" ? 3 : state.profile.exp==="intermediate" ? 4 : 5;
+    newRR = state.profile.goalType==="hybrid" ? {min:6,max:10} : {min:6,max:10};
+  } else if(oldEx.category==="accessory" && newEx.category==="accessory"){
+    // keep
+  } else {
+    // fallback to defaults
+    const d = defaultPrescription(newEx);
+    newSets = d.sets; newRR = d.repRange;
+  }
+
+  // Preserve checkmark state for all other items automatically
+  // For swapped item: reset its check + set logs
+  const newItem = { key: toExId + "-" + Math.random().toString(16).slice(2,8), exId: toExId, sets:newSets, repRange:newRR };
+
+  // Carry over "done" state only if user wants? default: reset
+  delete log.checks[oldItem.key];
+  delete log.setLogs[oldItem.key];
+
+  day.items[idx] = newItem;
+
+  save();
+  renderAll();
+}
+
+function setDayRest(rebalance=false){
+  const iso = state.selectedISO;
+  const idx = state.plan.week.findIndex(d=>d.iso===iso);
+  if(idx>=0){
+    state.plan.week[idx] = { iso, type:"rest", title: restTitleFor(state.profile), items: [] };
+  }
+  if(rebalance) rebalanceWeekAfterChange(idx);
+  document.getElementById("audibleOut").innerText = rebalance ? "Set to Rest + rebalanced week ✅" : "Set to Rest ✅";
+  save();
+  renderAll();
+}
+
+function replaceDayFocus(focus, rebalance=false){
+  const iso = state.selectedISO;
+  const idx = state.plan.week.findIndex(d=>d.iso===iso);
+  if(idx<0) return;
+
+  let items = [];
+  let title = "Workout";
+  if(focus==="upper"){ items = templateUpper(); title="Upper Body"; }
+  else if(focus==="lower"){ items = templateLower(); title="Lower Body"; }
+  else if(focus==="full"){ items = templateFull(); title="Full Body"; }
+  else if(focus==="cardio"){ items = templateCardio(); title="Cardio + Mobility"; }
+  else if(focus==="mobility"){ items = templateMobility(); title="Mobility"; }
+  else {
+    // if user passed goalType accidentally
+    items = templateFull(); title="Full Body";
+  }
+
+  state.plan.week[idx] = { iso, type:"workout", title, items };
+
+  // ensure log exists
+  ensureLogsForISO(iso);
+  // optionally rebalance to maintain weekly workout count
+  if(rebalance) rebalanceWeekAfterChange(idx);
+
+  document.getElementById("audibleOut").innerText = rebalance ? "Replaced workout + rebalanced week ✅" : "Replaced workout ✅";
+  save();
+  renderAll();
+}
+
+function rebalanceWeekAfterChange(changedIdx){
+  // keep weekly workout count aligned with daysPerWeek by flipping the next rest/workout
+  const desired = state.profile.daysPerWeek;
+  const current = state.plan.week.filter(d=>d.type==="workout").length;
+  if(current === desired) return;
+
+  if(current > desired){
+    // too many workouts: find a workout day after changedIdx and convert to rest
+    const cutIdx = state.plan.week.findIndex((d,i)=> i!==changedIdx && i>changedIdx && d.type==="workout");
+    if(cutIdx>=0){
+      state.plan.week[cutIdx] = { iso: state.plan.week[cutIdx].iso, type:"rest", title: restTitleFor(state.profile), items: [] };
+    }
+    return;
+  }
+
+  if(current < desired){
+    // too few workouts: find a rest day after changedIdx and convert to a default workout
+    const addIdx = state.plan.week.findIndex((d,i)=> i!==changedIdx && i>changedIdx && d.type==="rest");
+    if(addIdx>=0){
+      state.plan.week[addIdx] = { iso: state.plan.week[addIdx].iso, type:"workout", title:"Full Body", items: templateFull() };
+    }
+  }
+}
+
+/* ------------------------- Plan Overview (quick) ------------------------- */
+function openPlanOverview(){
+  const planned = state.plan.week.filter(d=>d.type==="workout").length;
+  const done = state.plan.week.filter(d=>d.type==="workout" && state.logs.workoutByISO[d.iso]?.completed).length;
+  alert(`Plan Overview\n\nWeek of ${state.plan.weekStartISO}\nWorkouts: ${done}/${planned}\nAdherence: ${computeWeeklyAdherence()}%`);
+}
+
+/* ------------------------- Goal view text ------------------------- */
+function renderGoal(){
+  const p = state.profile;
+  const adh = computeWeeklyAdherence();
+  const planned = state.plan.week.filter(d=>d.type==="workout").length;
+  const done = state.plan.week.filter(d=>d.type==="workout" && state.logs.workoutByISO[d.iso]?.completed).length;
+
+  document.getElementById("goalText").innerText =
+    `Goal: ${(p.goalType==="hybrid"?"Hybrid/Functional":p.goalType)} • Days/week: ${p.daysPerWeek} • Workouts: ${done}/${planned} • Adherence: ${adh}%`;
+}
+
 /* ------------------------- Render ------------------------- */
-function renderDayHeader(){
+function renderDateChip(){
   const iso = state.selectedISO;
   const d = new Date(iso + "T00:00:00");
   const dow = DOW[d.getDay()];
   const mm = (d.getMonth()+1).toString().padStart(2,"0");
   const dd = d.getDate().toString().padStart(2,"0");
-  document.getElementById("selDateChip").innerHTML = `${dow} <small>${mm}/${dd}</small>`;
-  document.getElementById("selDayHint").innerText = (iso === isoToday()) ? "📍 You are viewing Today." : "🗓️ Viewing a past/future day.";
-}
-function renderHero(){
-  const goalName = ({
-    fat:"Lose Fat Plan",
-    muscle:"Build Muscle Plan",
-    hybrid:"Functional Fitness Plan",
-    endurance:"Endurance Plan"
-  })[state.profile.goalType] || "Your Plan";
-
-  document.getElementById("heroName").innerText = goalName;
-
-  const planned = state.plan.week.filter(d=>d.type==="workout").length;
-  const done = state.plan.week.filter(d=>d.type==="workout" && state.logs.workoutByISO[d.iso]?.completed).length;
-
-  const adh = computeWeeklyAdherence();
-  document.getElementById("heroAdh").innerText = `${adh}%`;
-  document.getElementById("heroDone").innerText = `${done}/${planned}`;
-
-  const bar = planned ? Math.round((done/planned)*100) : 0;
-  document.getElementById("heroBar").style.width = `${bar}%`;
-
-  const ws = state.plan.weekStartISO;
-  document.getElementById("heroMeta").innerText = `Week of ${ws} • Tap a day above`;
-}
-
-function renderGoal(){
-  const p = state.profile;
-  const goalName = ({
-    fat:"Lose Fat",
-    muscle:"Build Muscle",
-    hybrid:"Hybrid / Functional",
-    endurance:"Endurance"
-  })[p.goalType] || "—";
-
-  const adh = computeWeeklyAdherence();
-  document.getElementById("goalText").innerText = `Goal: ${goalName} • Weekly adherence: ${adh}%`;
-  document.getElementById("weeklySummary").innerText = `This week: adherence ${adh}% • workouts done ${state.plan.week.filter(d=>state.logs.workoutByISO[d.iso]?.completed).length}/${state.plan.week.filter(d=>d.type==="workout").length}.`;
+  document.getElementById("selDateChip").innerText = `${dow} ${mm}/${dd}`;
 }
 
 function renderAll(){
@@ -1319,7 +2158,6 @@ function renderAll(){
   }
 
   if(!state.selectedISO) state.selectedISO = isoToday();
-
   buildWeekForISO(state.selectedISO, false);
   ensureLogsForISO(state.selectedISO);
 
@@ -1328,10 +2166,10 @@ function renderAll(){
 
   renderHero();
   renderWeekStrip();
-  renderDayHeader();
+  renderDateChip();
   renderWater();
   renderWorkout();
-  renderWeek();
+  renderWeekGrid();
   renderGoal();
 }
 
@@ -1342,10 +2180,15 @@ if(state.onboarded){
   buildWeekForISO(state.selectedISO, true);
   ensureLogsForISO(state.selectedISO);
   save();
+  document.getElementById("onboarding").classList.add("hidden");
   showTab("today");
 } else {
+  setTopTitle("Today");
   renderAll();
 }
+
+/* ------------------------- Modal helpers ------------------------- */
+function closeAudible(){ document.getElementById("audibleModal").classList.remove("show"); }
 </script>
 </body>
 </html>
